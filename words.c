@@ -2,11 +2,46 @@
 #include <stdio.h>
 #include "words.h"
 #include "fault.h"
+#include "forth_simple.h"
 
 word_mass_t words;
 
 #define cmp strcmp
 //int cmp( char *leftWord, char *rightWord );
+
+void initWords()
+{
+	add_word( "add", &forth_add );
+	add_word( "sub", &forth_sub );
+	add_word( "div", &forth_div );
+	add_word( "mul", &forth_mul );
+	add_word( "mod", &forth_mod );
+	add_word( "divmod", &forth_divmod );
+
+	add_word( "swap", &forth_swap );
+	add_word( "dup", &forth_dup );
+	add_word( "rot", &forth_rot );
+	add_word( "drop", &forth_drop );
+
+	add_word( "cswap", &forth_cswap );
+	add_word( "cdup", &forth_cdup );
+	add_word( "crot", &forth_crot );
+	add_word( "cdrop", &forth_cdrop );
+
+	add_word( "and", &forth_and );
+	add_word( "or", &forth_or );
+
+	add_word( "low", &forth_low );
+	add_word( "lowe", &forth_lowe );
+
+	add_word( "hight", &forth_hight );
+	add_word( "highte", &forth_highte );
+
+	add_word( "band", &forth_band );
+	add_word( "bor", &forth_bor );
+
+	add_word( "print", &forth_print );
+}
 
 void add_word( char *name, func wordFunc )
 {
@@ -25,6 +60,7 @@ void add_word( char *name, func wordFunc )
 	for( int i = 0; i < words.word_count; i++ )
 	{
 		cmp_result = cmp( name, words.word_array[i].name );
+
 		if( cmp_result > 0 )
 		{
 			word_pos++;
@@ -42,15 +78,15 @@ void add_word( char *name, func wordFunc )
 		
 	} //calc pos for new word
 
-	if( word_pos != words.word_count-1 ) //chech: need move old words?
+	if( word_pos != words.word_count ) //chech: need move old words?
 	{
-
-		for( int i = word_pos + 1; i < words.word_count; i++ )
+		for( int i = words.word_count; i >= word_pos; i-- )
 		{
 			words.word_array[i + 1] = words.word_array[i];
 		} //move old element
-		words.word_count++;
 	}
+	
+	words.word_count++;
 
 	strcpy( words.word_array[word_pos].name, name );
 	words.word_array[word_pos].funcptr = wordFunc; //paste new word

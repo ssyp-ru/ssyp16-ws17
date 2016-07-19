@@ -1,25 +1,32 @@
 #include <stdlib.h>
 
-#define WORD_COUNT 1024
+#ifndef __WORDS__
+#define __WORDS__
 
-typedef void (*func)(void);
+	#define WORD_COUNT 1024
 
-typedef struct word
-{
-	char name[32];
-	func funcptr;
-} word_t;
+	typedef void (*func)(void);
 
-typedef struct word_mass
-{
-	word_t word_array[WORD_COUNT];
-	int word_count;
-} word_mass_t;
+	typedef struct word
+	{
+		char name[32];
+		func funcptr;
+	} word_t;
 
-extern word_mass_t worlds;
+	typedef struct word_mass
+	{
+		word_t word_array[WORD_COUNT];
+		int word_count;
+	} word_mass_t;
 
-void init_words();
+	extern word_mass_t worlds;
 
-func get_word( char *name );
-void add_word( char *name, func wordFunc );
-void rm_word( char *name );
+	void init_words();
+
+	func get_word( char *name );
+	void add_word( char *name, func wordFunc );
+	void rm_word( char *name );
+	
+	void initWords();
+
+#endif

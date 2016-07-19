@@ -1,19 +1,23 @@
 #include <stdint.h>
 #include <string.h>
 
-#define STACK_SIZE 1024
+#ifndef __STACK__
+#define __STACK__
 
-typedef intptr_t cell_t;
+	#define STACK_SIZE 1024
+
+	typedef intptr_t cell_t;
  
-typedef struct {
-	size_t size;
-	cell_t data[STACK_SIZE]; 
-} stack_t;
-extern stack_t datastack,ctrlstack;
+	typedef struct {
+		size_t size;
+		cell_t data[STACK_SIZE]; 
+	} stack_t;
+	extern stack_t datastack,ctrlstack;
 
-void push( cell_t new_element );
-cell_t pop();
+	void push( cell_t new_element );
+	cell_t pop();
 
-void cpush( cell_t new_element );
-cell_t cpop();
+	void cpush( cell_t new_element );
+	cell_t cpop();
 
+#endif

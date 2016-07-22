@@ -3,7 +3,7 @@
 #ifndef __WORDS__
 #define __WORDS__
 
-	#define WORD_COUNT 1024
+	#define WORD_COUNT 64
 
 	typedef void (*func)(void);
 

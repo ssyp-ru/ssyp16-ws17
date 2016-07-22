@@ -10,7 +10,7 @@ cell_t pop()
 	fault( "data stack null" );
 //	return 0x80000000;
 	
-	return datastack.a[datastack.size];	
+	return datastack.data[datastack.size];
 }
 
 void push( cell_t in )
@@ -20,17 +20,17 @@ void push( cell_t in )
 	fault( "data stack overflow" );
 //	datastack.size = 1;
 
-	datastack.a[datastack.size-1] = in;
+	datastack.data[datastack.size-1] = in;
 }
 
 cell_t cpop()
 {
 	if (ctrlstack.size>0)
 	--ctrlstack.size; else
-	fault( "ctrl steck null" );
+	fault( "ctrl steck underflow" );
 //	return 0x80000000;
 	
-	return ctrlstack.a[ctrlstack.size];	
+	return ctrlstack.data[ctrlstack.size];
 }
 
 void cpush( cell_t in )
@@ -40,5 +40,5 @@ void cpush( cell_t in )
 	fault( "ctrl steck overflow" );
 //	ctrlstack.size = 1;
 
-	ctrlstack.a[ctrlstack.size-1] = in;
+	ctrlstack.data[ctrlstack.size-1] = in;
 }

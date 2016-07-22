@@ -1,22 +1,25 @@
-#include <string.h>
+//#include <string.h>
 #include <stdio.h>
 #include "words.h"
 #include "fault.h"
 #include "forth_simple.h"
+#include "charb.h"
 
 word_mass_t words;
 
-#define cmp strcmp
+#define cmp cmp
+#define strlen len
+#define strcpy copy
 //int cmp( char *leftWord, char *rightWord );
 
 void initWords()
 {
-	add_word( "add", &forth_add );
-	add_word( "sub", &forth_sub );
-	add_word( "div", &forth_div );
-	add_word( "mul", &forth_mul );
-	add_word( "mod", &forth_mod );
-	add_word( "divmod", &forth_divmod );
+	add_word( "+", &forth_add );
+	add_word( "-", &forth_sub );
+	add_word( "/", &forth_div );
+	add_word( "*", &forth_mul );
+	add_word( "%", &forth_mod );
+	add_word( "/%", &forth_divmod );
 
 	add_word( "swap", &forth_swap );
 	add_word( "dup", &forth_dup );
@@ -28,19 +31,19 @@ void initWords()
 	add_word( "crot", &forth_crot );
 	add_word( "cdrop", &forth_cdrop );
 
-	add_word( "and", &forth_and );
-	add_word( "or", &forth_or );
+	add_word( "&&", &forth_and );
+	add_word( "||", &forth_or );
 
-	add_word( "low", &forth_low );
-	add_word( "lowe", &forth_lowe );
+	add_word( "<", &forth_low );
+	add_word( "<=", &forth_lowe );
 
-	add_word( "hight", &forth_hight );
-	add_word( "highte", &forth_highte );
+	add_word( ">", &forth_hight );
+	add_word( ">=", &forth_highte );
 
-	add_word( "band", &forth_band );
-	add_word( "bor", &forth_bor );
+	add_word( "&", &forth_band );
+	add_word( "|", &forth_bor );
 
-	add_word( "print", &forth_print );
+	add_word( ".", &forth_print );
 }
 
 void add_word( char *name, func wordFunc )

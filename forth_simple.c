@@ -18,7 +18,11 @@ void forth_sub()
 void forth_div()
 {
 	cell_t tmp = pop();
-	push( pop() / tmp );
+	if( tmp == 0 )
+	{
+		fault( "division on zero" );
+	}
+	push( (cell_t)(pop() / tmp) );
 }
 
 void forth_mul()
@@ -29,6 +33,10 @@ void forth_mul()
 void forth_mod()
 {
 	cell_t tmp = pop();
+	if( tmp == 0 )
+	{
+		fault( "division on zero" );
+	}
 	push( pop() % tmp );
 }
 
@@ -37,7 +45,12 @@ void forth_divmod()
 	cell_t first = pop();
 	cell_t last = pop();
 
-	push( last / first );
+	if( last == 0 )
+	{
+		fault( "division on zero" );
+	}
+
+	push( (cell_t)(last / first) );
 	push( last % first );	
 }
 

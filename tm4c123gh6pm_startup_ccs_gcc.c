@@ -326,6 +326,7 @@ FaultISR(void)
     //
     // Enter an infinite loop.
     //
+	//UART_print("FAULT\r\n");
     while(1)
     {
     }

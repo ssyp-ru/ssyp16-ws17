@@ -60,6 +60,8 @@ void init_UART()
 	flag_on( RCGCUART, UART_A );
 	flag_on( RCGCGPIO, UART_A );
 
+	*(uint32_t*)(GPIOBASE+0x520) = 0x0;
+
 	flag_on( GPIODEN, PIN_1 );
 	flag_on( GPIODEN, PIN_2 );
 
@@ -83,6 +85,8 @@ void init_UART()
 	*(uint32_t*)UARTFBRD = (int)(0.1666666 * 64 + 0.5);				//SETUP clock
 
 	*(uint16_t*)UARTC = 0x301; // set uart on, receive on, transmit on
+
+	for( uint64_t i = 0; i < 500000; i++ ){;}
 }
 
 void get_user_input( char *buffer )

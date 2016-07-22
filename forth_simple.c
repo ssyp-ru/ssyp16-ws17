@@ -2,6 +2,7 @@
 #include "stack.h"
 #include "fault.h"
 #include "forth_simple.h"
+#include "user_interface.h"
 #include <stdio.h>
 
 void forth_add()
@@ -174,10 +175,13 @@ void forth_print()
 {
 	if( datastack.size < 1 )
 	{
-		printf( "No Have value in stack\n" );
+		UART_print( "No Have value in stack\r\n" );
 	}
 	else
 	{
-		printf( "%d\n", (int)datastack.data[ datastack.size-1 ] );
+		char value[16];
+		//printf( "%d\n", (int)datastack.data[ datastack.size-1 ] );
+		Dasha_itoa( (int)datastack.data[ datastack.size-1 ], value );
+		UART_print( value );
 	}
 }

@@ -3,16 +3,16 @@
 #include "words.h"
 
 int main ()
-	{
+{
+	for( uint64_t i = 0; i < 500000; i++ ){;}//delay
 
 	init_UART();
+	init_words();
 
 	UART_print( "HELLO PUTTY (or screen)\r\n" );
 
 	char input[128];
-	char *token;
-
-	int num;
+	char token[32];
 
 	func foo;
 
@@ -20,7 +20,7 @@ int main ()
 	{
 		get_user_input( input );
 
-		while( tokenise( &(input[0]), token ) )
+		while( tokenise( input, token ) )
 		{
 			foo = get_word( token );
 			if( foo != 0x0 )
@@ -29,7 +29,7 @@ int main ()
 			}
 			else
 			{
-				num = dasha_atoi( token );
+				push( dasha_atoi( token ) );
 			}
 		}
 	}

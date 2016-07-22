@@ -12,7 +12,7 @@ word_mass_t words;
 #define strcpy copy
 //int cmp( char *leftWord, char *rightWord );
 
-void initWords()
+void init_words()
 {
 	add_word( "+", &forth_add );
 	add_word( "-", &forth_sub );

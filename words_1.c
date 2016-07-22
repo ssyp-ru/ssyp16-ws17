@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-char *tokenise(char * string, char *result)
+char *tokenise(char * string)
 {
 	static char * strCut;
 	static char * str;
@@ -25,52 +26,25 @@ char *tokenise(char * string, char *result)
 		strCut++;
 	}
 	char * caret = strCut-1;
-
-	for (int i = wordlen-1; i >= 0; i--)
+	char * result = (char *) malloc(sizeof(char) * wordlen);
+	// <
+	
+	for (int q = wordlen-1;q >= 0;q--)
 	{
-		result[i] = *(caret--);
+		result[q] = *caret--;
 	}
-	result[wordlen] = 0;	
-
 	return result;
 }
 
-int dasha_atoi(char * i)
-{
-	
-	//'0' == 49
-	//"123123" -> 123123
-	//"123asd" -> 123
-	//"asd" -> 0
-	//9+'0' == '9'
-
-	
-	int len,m = 1,num = 0;
-	char * strCut = i;
-	if (*strCut == '-')
-	{
-		m = -1;
-		strCut++;
-	}
-	for (len = 0;(*strCut <= '9') && (*strCut >= '0');len++)
-	{
-		num*= 10;
-		num += (*strCut - '0');
-		strCut++;
-	}
-	num *= m;
-	return num;
-}
-
 void Dasha_itoa(int i, char *str)
-{
+{	
 	int len = -1, tmp = 1, t = 1, i2 = i;
 	if ( i < 0 )
 	{
 		str[0] = '-';
 		len ++;
-		i2 *= -1;
-
+		i2 *= -1;		
+	
 	}
 	while (tmp != 0)
 	{
@@ -85,9 +59,43 @@ void Dasha_itoa(int i, char *str)
 	for (int w = len; w >= end; w--)
 	{
 		int e = (i2 % t) / (t / 10);
-		///printf( "1: %d\n", e );
+		printf( "1: %d\n", e );
 		str[w] = '0' + e;
-		t *= 10;
+		t *= 10;	  		 
 	}
 }
+/*
+int dasha_atoi(int * i, char * str )
+{
+	
+	//'0' == 49
+	//"123123" -> 123123
+	//"123asd" -> 123
+	//"asd" -> 0
+	//9+'0' == '9'
+	
+	int len,m = 1,num = 0;
+	char * strCut = i;
+	if (*strCut == '-')
+	{
+		m = -1;
+		strCut++;
+	}
+	for (len = 0;(*strCut <= '9') && (*strCut >= '0');len++)
+	{
+		num *= 10;
+		num += (*strCut - '0');
+		strCut++;
+	}
+	num *= m;
+	return num;
+}*/
 
+int main()
+{
+	int n  = 9908;
+	char str[1024];
+	Dasha_itoa(n,str);
+	printf ("%s\n", str);
+	return 0;
+}

@@ -62,14 +62,18 @@ void init_UART()
 
 	*(uint32_t*)(GPIOBASE+0x520) = 0x0;
 
+	for( uint64_t i = 0; i < 250000; i++ ){;}
+
 	flag_on( GPIODEN, PIN_1 );
 	flag_on( GPIODEN, PIN_2 );
 
 	flag_on( GPIOAFSEF, PIN_1 );
 	flag_on( GPIOAFSEF, PIN_2 );
-	
+
 	flag_on( GPIOPC, PIN_1 * 4 );
 	flag_on( GPIOPC, PIN_2 * 4 );
+
+	for( uint64_t i = 0; i < 250000; i++ ){;}
 
 	//conf
 	flag_off( UARTC, UART_CONTROL_ON_F ); // UART OFF
@@ -86,7 +90,14 @@ void init_UART()
 
 	*(uint16_t*)UARTC = 0x301; // set uart on, receive on, transmit on
 
-	for( uint64_t i = 0; i < 500000; i++ ){;}
+	for( uint64_t i = 0; i < 250000; i++ ){;}
+
+	flag_off( UARTC, UART_CONTROL_ON_F ); // UART OFF
+
+	flag_on( UARTLC, UART_CONTROL_8_BIT_F ); // 8-bit mode
+	flag_on( UARTLC, UART_CONTROL_8_BIT_F+1 ); // 8-bit mode
+
+	*(uint16_t*)UARTC = 0x301;
 }
 
 void get_user_input( char *buffer )
@@ -97,6 +108,14 @@ void get_user_input( char *buffer )
 	while( inChar != 0xD && inChar != 0x0 )
 	{
 		UART_putc( inChar );
+
+		if( inChar == 0x7F )
+		{
+			count = (count < 2) ? count-2 : 0;
+			inChar = UART_getc();
+			continue;
+		}
+
 		buffer[count] = inChar;
 		count++;
 

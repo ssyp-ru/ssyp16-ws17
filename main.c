@@ -4,9 +4,11 @@
 
 int main ()
 {
+	init_UART();
+
 	for( uint64_t i = 0; i < 500000; i++ ){;}//delay
 
-	init_UART();
+//	init2_UART();
 	init_words();
 
 	UART_print( "HELLO PUTTY (or screen)\r\n" );

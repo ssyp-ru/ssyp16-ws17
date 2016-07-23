@@ -1,5 +1,3 @@
-void a ();
-void b ();
 
 void dispatch ();
 void run_handler (char * word);

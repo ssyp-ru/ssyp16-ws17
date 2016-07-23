@@ -44,6 +44,7 @@ void init_words()
 	add_word( "|", &forth_bor );
 
 	add_word( ".", &forth_print );
+	add_word( ".S", &forth_print_all );
 }
 
 void add_word( char *name, func wordFunc )

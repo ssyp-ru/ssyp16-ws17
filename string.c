@@ -49,7 +49,16 @@ int dasha_atoi(char * i)
 	//"123asd" -> 123
 	//"asd" -> 0
 	//9+'0' == '9'
-
+	for( int j = 0; i[j] != 0; j++ )
+	{
+		if( i[j] < '0' || i[j] > '9' )
+		{
+			UART_print( ">>> " );
+			UART_print( i );
+			UART_print( " <<<\r\n" );
+			fault( "invaild command" );
+		}
+	}
 	
 	int len,m = 1,num = 0;
 	char * strCut = i;
@@ -58,6 +67,7 @@ int dasha_atoi(char * i)
 		m = -1;
 		strCut++;
 	}
+
 	for (len = 0;(*strCut <= '9') && (*strCut >= '0');len++)
 	{
 		num*= 10;
@@ -70,6 +80,13 @@ int dasha_atoi(char * i)
 
 void Dasha_itoa(int i, char *str)
 {
+	if( i == 0 )
+	{
+		str[0] = '0';
+		str[1] = 0;
+		return;
+	}
+
 	int len = -1, tmp = 1, t = 1, i2 = i;
 	if ( i < 0 )
 	{
@@ -97,3 +114,57 @@ void Dasha_itoa(int i, char *str)
 	}
 }
 
+int len (char *f){	//Нахождение длины строки
+	int lenstr = 0;
+	while(*f != 0) {
+		lenstr++;
+		f++;
+	}
+	return lenstr;
+}
+
+void copy( char *f, char *s )
+{
+	int i = 0;
+	while( s[i] != 0 )
+	{
+		f[i] = s[i];
+		i++;
+	}
+	f[i] = 0;
+}
+
+// no
+//void copy (char *f, char *s){	//Копирование строки в определённое место
+//	for(int c = 0; c > len(s); c++){
+//		f[c] = s[c];
+//	}
+//}
+
+// no
+/*char * dup (char *f){	//Копирование строки в неопределённое место
+	char *s = (char *)malloc(len(f));
+	for(int  c = 0; c < len(f); c ++){
+		s[c] = f[c];
+	}
+	return s;
+}*/
+
+
+int cmp( char *f, char *s )
+{
+	while( 1 )
+	{
+		if( *f != *s )
+		{
+			return (*f) - (*s);
+		}
+		if( *f == 0 || *s == 0 )
+		{
+			return (*f) - (*s);
+		}
+		f++;
+		s++;
+	}
+	return 0;
+}

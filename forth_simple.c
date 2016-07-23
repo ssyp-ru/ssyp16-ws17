@@ -186,3 +186,22 @@ void forth_print()
 		UART_print( "\r\n" );
 	}
 }
+
+void forth_print_all()
+{
+	if( datastack.size < 1 )
+	{
+		UART_print( "No Have value in stack\r\n" );
+	}
+	else
+	{
+		char value[16];
+		for( int i = 0; i < datastack.size; i++ )
+		{
+			Dasha_itoa( (int)datastack.data[i], value );
+			UART_print( value );
+			UART_putc( ' ' );
+		}
+		UART_print( "\r\n" );
+	}
+}

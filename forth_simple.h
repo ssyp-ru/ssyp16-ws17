@@ -28,4 +28,5 @@
 	void forth_bor();
 
 	void forth_print();
+	void forth_print_all();
 #endif

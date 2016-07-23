@@ -320,13 +320,14 @@ NmiSR(void)
 // for examination by a debugger.
 //
 //*****************************************************************************
+extern void system_fault();
 static void
 FaultISR(void)
 {
     //
     // Enter an infinite loop.
     //
-	//UART_print("FAULT\r\n");
+	system_fault();
     while(1)
     {
     }

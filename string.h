@@ -8,4 +8,8 @@
 	char *tokenise( char *string, char *result );
 	void drop_tokenise();
 
+	int len( char *f );
+	void copy( char *f, char *s );
+	int cmp( char *f, char *s );
+
 #endif

@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static char * str;
+
 char *tokenise(char * string, char *result)
 {
 	static char * strCut;
-	static char * str;
 
 	if (str != string)
 	{
@@ -33,6 +34,11 @@ char *tokenise(char * string, char *result)
 	result[wordlen] = 0;	
 
 	return result;
+}
+
+void drop_tokenise()
+{
+	str = 0x0;
 }
 
 int dasha_atoi(char * i)

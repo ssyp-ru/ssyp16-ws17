@@ -183,5 +183,6 @@ void forth_print()
 		//printf( "%d\n", (int)datastack.data[ datastack.size-1 ] );
 		Dasha_itoa( (int)datastack.data[ datastack.size-1 ], value );
 		UART_print( value );
+		UART_print( "\r\n" );
 	}
 }

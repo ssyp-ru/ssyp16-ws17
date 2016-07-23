@@ -100,7 +100,7 @@ void init_UART()
 	*(uint16_t*)UARTC = 0x301;
 }
 
-void get_user_input( char *buffer )
+void get_user_input( char *line )
 {
 	char inChar = UART_getc();
 	int count = 0;	
@@ -111,12 +111,19 @@ void get_user_input( char *buffer )
 
 		if( inChar == 0x7F )
 		{
-			count = (count < 2) ? count-2 : 0;
+			if( count > 2 )
+			{
+				count--;
+			}
+			else
+			{
+				count = 0;
+			}
 			inChar = UART_getc();
 			continue;
 		}
 
-		buffer[count] = inChar;
+		line[count] = inChar;
 		count++;
 
 		if( count > 126 )
@@ -129,7 +136,7 @@ void get_user_input( char *buffer )
 
 	UART_print( "\r\n" );
 
-	buffer[count] = 0;
+	line[count] = 0;
 }
 
 char UART_getc()

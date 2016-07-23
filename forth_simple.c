@@ -21,7 +21,7 @@ void forth_div()
 	cell_t tmp = pop();
 	if( tmp == 0 )
 	{
-		fault( "division on zero" );
+		fault( "division by zero" );
 	}
 	push( (cell_t)(pop() / tmp) );
 }
@@ -36,7 +36,7 @@ void forth_mod()
 	cell_t tmp = pop();
 	if( tmp == 0 )
 	{
-		fault( "division on zero" );
+		fault( "division by zero" );
 	}
 	push( pop() % tmp );
 }
@@ -48,7 +48,7 @@ void forth_divmod()
 
 	if( last == 0 )
 	{
-		fault( "division on zero" );
+		fault( "division by zero" );
 	}
 
 	push( (cell_t)(last / first) );

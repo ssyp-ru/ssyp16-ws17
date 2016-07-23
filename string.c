@@ -1,17 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static char * str;
+//static char * str;
+int tokenise_reload = 1;
 
 char *tokenise(char * string, char *result)
 {
 	static char * strCut;
 
-	if (str != string)
+	//if (str != string)
+	//{
+	//	strCut =string;
+	//	str=string;
+	//}
+
+	if( tokenise_reload )
 	{
-		strCut =string;
-		str=string; 
+		strCut = string;
+		tokenise_reload = 0;
 	}
+
 	if (*strCut == '\0')
 		return NULL;
 	while (*strCut == ' ' || *strCut == '\t')
@@ -38,7 +46,7 @@ char *tokenise(char * string, char *result)
 
 void drop_tokenise()
 {
-	str = 0x0;
+	tokenise_reload = 1;
 }
 
 int dasha_atoi(char * i)
@@ -131,7 +139,7 @@ void copy( char *f, char *s )
 		f[i] = s[i];
 		i++;
 	}
-	f[i] = 0;
+	f[i] = s[i];
 }
 
 // no

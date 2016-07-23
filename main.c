@@ -1,14 +1,14 @@
 #include "user_interface.h"
 #include "stack.h"
 #include "words.h"
+#include "pwm.h"
 
 int main ()
 {
 	init_UART();
 
-	for( uint64_t i = 0; i < 500000; i++ ){;}//delay
+	for( uint64_t i = 0; i < 250000; i++ ){;}//delay
 
-//	init2_UART();
 	init_words();
 
 	UART_print( "HELLO PUTTY (or screen)\r\n" );
@@ -31,9 +31,12 @@ int main ()
 			}
 			else
 			{
-				push( dasha_atoi( token ) );
+				//push( dasha_atoi( token ) );
+				push( string_to_int( token ) );
 			}
 		}
+
+		drop_tokenise();
 	}
 
 	return 0;

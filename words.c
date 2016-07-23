@@ -3,7 +3,6 @@
 #include "words.h"
 #include "fault.h"
 #include "forth_simple.h"
-#include "charb.h"
 
 word_mass_t words;
 
@@ -44,6 +43,10 @@ void init_words()
 	add_word( "|", &forth_bor );
 
 	add_word( ".", &forth_print );
+	add_word( ".S", &forth_print_all );
+
+	add_word( "setmem", &forth_setmem );
+	add_word( "getmem", &forth_getmem );
 }
 
 void add_word( char *name, func wordFunc )

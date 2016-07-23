@@ -9,13 +9,8 @@ const void *RCGCGPIO = 0x400FE000+0x608;
 const void *GPIOBASE = __GPIOBASE;
 
 const void *GPIOAFSEF= __GPIOBASE+0x420;
-const void *GPIO2MA  = __GPIOBASE+0x500;
-const void *GPIOSRCS = __GPIOBASE+0x518;
 const void *GPIOPCTL = __GPIOBASE+0x52C;
-const void *GPIOCR   = __GPIOBASE+0x524;
 const void *GPIODEN  = __GPIOBASE+0x51C;
-const void *GPIOPDR  = __GPIOBASE+0x510;
-const void *GPIOPUR  = __GPIOBASE+0x514;
 const void *GPIOLOCK = __GPIOBASE+0x520;
 
 #define __UARTBASE 0x4000C000
@@ -57,13 +52,13 @@ const uint16_t UART_ON_RECEIVE_TRANSMIT_F = 0x301;
 //set bit(with num pos) on ptr_byte 1
 void flag_on( void *ptr_byte, int pos )
 {
-	*((uint32_t *)ptr_byte) = (*((uint32_t *)ptr_byte)) | ( 1 << pos );
+	*((uint32_t *)ptr_byte) |= ( 1 << pos );
 }
 
 //set bit(with num pos) on ptr_byte 0
 void flag_off( void *ptr_byte, int pos )
 {
-	*((uint32_t *)ptr_byte) = (*((uint32_t *)ptr_byte)) & ~(1 << pos);
+	*((uint32_t *)ptr_byte) &= ~(1 << pos);
 }
 
 void init_UART()

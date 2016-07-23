@@ -12,4 +12,6 @@
 	void copy( char *f, char *s );
 	int cmp( char *f, char *s );
 
+	int string_to_int( char *text );
+
 #endif

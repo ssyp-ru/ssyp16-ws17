@@ -176,3 +176,79 @@ int cmp( char *f, char *s )
 	}
 	return 0;
 }
+
+
+int int_from_char( char ch )
+{
+	switch ((int)ch)
+	{
+		case 'a':
+			return 10;
+		case 'b':
+			return 11;
+		case 'c':
+			return 12;
+		case 'd':
+			return 13;
+		case 'e':
+			return 14;
+		case 'f':
+			return 15;
+		case 'A':
+			return 10;
+		case 'B':
+			return 11;
+		case 'C':
+			return 12;
+		case 'D':
+			return 13;
+		case 'E':
+			return 14;
+		case 'F':
+			return 15;
+		default:
+			return ((int)ch - 48);
+	}
+}
+
+int string_to_int( char *text ) //by dima
+{
+	int mult = 10;
+	int value = 0;
+	int end_pos = 0;
+	int char_mult = 1;
+
+	if( text[0] == '-' )
+	{
+		char_mult = -1;
+		end_pos++;
+	}
+
+	if( text[end_pos] == '0' )
+	{
+		if( text[end_pos+1] == 'x' )
+		{
+			mult = 16;
+			end_pos+= 2;
+		}
+		else if( text[end_pos+1] == 'b' )
+		{
+			mult = 2;
+			end_pos+= 2;
+		}
+		else
+		{
+			mult = 8;
+			end_pos+= 1;
+		}
+	}
+
+	for( int i = end_pos; text[i] != 0; i++ )
+	{
+		value*= mult;
+		value+= int_from_char(text[i]);
+	}
+
+	return value * char_mult;
+}
+

@@ -31,7 +31,8 @@ int main ()
 			}
 			else
 			{
-				push( dasha_atoi( token ) );
+				//push( dasha_atoi( token ) );
+				push( string_to_int( token ) );
 			}
 		}
 

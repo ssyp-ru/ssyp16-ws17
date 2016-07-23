@@ -205,3 +205,15 @@ void forth_print_all()
 		UART_print( "\r\n" );
 	}
 }
+
+void forth_setmem()
+{
+	cell_t *ptr = (cell_t*)pop();
+	*ptr = pop();
+}
+
+void forth_getmem()
+{
+	cell_t *ptr = (cell_t*)pop();
+	push( *ptr );
+}

@@ -58,7 +58,7 @@ void flag_on( void *ptr_byte, int pos )
 //set bit(with num pos) on ptr_byte 0
 void flag_off( void *ptr_byte, int pos )
 {
-	*((uint32_t *)ptr_byte) &= ~(1 << pos);
+	*((uint32_t *)ptr_byte) ^= (1 << pos);
 }
 
 void init_UART()

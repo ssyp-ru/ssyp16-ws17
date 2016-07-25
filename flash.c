@@ -53,21 +53,21 @@ uintptr_t where_write_dict(size_t num_bite){
 		flash_write32(END_OF_PAGE, flash_dict_now);
 		flash_dict_now +=1*4;
 		fn =flash_dict_now;
-		flash_write32(result = flash_alloc(), fn);
+		flash_write32(flash_dict_now = result = flash_alloc(), fn);
 		return result;
 	}
 }
 
 uintptr_t where_write_code(size_t num_bite){
-	uintptr_t result, fn;
+	uintptr_t  fn;
 	if (flash_have_memory_code(num_bite))
 		return flash_code_now;
 	else{
 		flash_write32(END_OF_PAGE, flash_code_now);
 		flash_code_now +=1*4;
 		fn =flash_code_now;
-		flash_write32(result = flash_alloc(), fn);
-		return result;
+		flash_write32(flash_code_now = flash_alloc(), fn);
+		return flash_code_now;
 	}
 }
 

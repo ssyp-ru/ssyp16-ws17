@@ -1,7 +1,6 @@
 #include "user_interface.h"
 #include "stack.h"
 #include "words.h"
-#include "pwm.h"
 
 int main ()
 {
@@ -36,7 +35,7 @@ int main ()
 			}
 		}
 
-		drop_tokenise();
+		tokenise( NULL, NULL );
 	}
 
 	return 0;

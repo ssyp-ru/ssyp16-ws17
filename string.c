@@ -1,26 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//static char * str;
-int tokenise_reload = 1;
-
 char *tokenise(char * string, char *result)
 {
 	static char * strCut;
+	static char * str;
 
-	//if (str != string)
-	//{
-	//	strCut =string;
-	//	str=string;
-	//}
-
-	if( tokenise_reload )
+	if (str != string)
 	{
-		strCut = string;
-		tokenise_reload = 0;
+		strCut =string;
+		str=string;
 	}
 
-	if (*strCut == '\0')
+	if ( *strCut == '\0' || string == NULL )
 		return NULL;
 	while (*strCut == ' ' || *strCut == '\t')
 		strCut++;
@@ -42,48 +34,6 @@ char *tokenise(char * string, char *result)
 	result[wordlen] = 0;	
 
 	return result;
-}
-
-void drop_tokenise()
-{
-	tokenise_reload = 1;
-}
-
-int dasha_atoi(char * i)
-{
-	
-	//'0' == 49
-	//"123123" -> 123123
-	//"123asd" -> 123
-	//"asd" -> 0
-	//9+'0' == '9'
-	for( int j = 0; i[j] != 0; j++ )
-	{
-		if( i[j] < '0' || i[j] > '9' )
-		{
-			UART_print( ">>> " );
-			UART_print( i );
-			UART_print( " <<<\r\n" );
-			fault( "invaild command" );
-		}
-	}
-	
-	int len,m = 1,num = 0;
-	char * strCut = i;
-	if (*strCut == '-')
-	{
-		m = -1;
-		strCut++;
-	}
-
-	for (len = 0;(*strCut <= '9') && (*strCut >= '0');len++)
-	{
-		num*= 10;
-		num += (*strCut - '0');
-		strCut++;
-	}
-	num *= m;
-	return num;
 }
 
 void Dasha_itoa(int i, char *str)
@@ -116,7 +66,6 @@ void Dasha_itoa(int i, char *str)
 	for (int w = len; w >= end; w--)
 	{
 		int e = (i2 % t) / (t / 10);
-		///printf( "1: %d\n", e );
 		str[w] = '0' + e;
 		t *= 10;
 	}
@@ -142,23 +91,6 @@ void copy( char *f, char *s )
 	f[i] = s[i];
 }
 
-// no
-//void copy (char *f, char *s){	//Копирование строки в определённое место
-//	for(int c = 0; c > len(s); c++){
-//		f[c] = s[c];
-//	}
-//}
-
-// no
-/*char * dup (char *f){	//Копирование строки в неопределённое место
-	char *s = (char *)malloc(len(f));
-	for(int  c = 0; c < len(f); c ++){
-		s[c] = f[c];
-	}
-	return s;
-}*/
-
-
 int cmp( char *f, char *s )
 {
 	while( 1 )
@@ -176,7 +108,6 @@ int cmp( char *f, char *s )
 	}
 	return 0;
 }
-
 
 int int_from_char( char ch )
 {
@@ -207,6 +138,7 @@ int int_from_char( char ch )
 		case 'F':
 			return 15;
 		default:
+			if( (int)ch - 48 > 9 ){ return -1; }
 			return ((int)ch - 48);
 	}
 }
@@ -243,10 +175,23 @@ int string_to_int( char *text ) //by dima
 		}
 	}
 
+	int num;
+
 	for( int i = end_pos; text[i] != 0; i++ )
 	{
 		value*= mult;
-		value+= int_from_char(text[i]);
+		num = int_from_char(text[i]);
+
+		if( num < 0 )
+		{
+			UART_print( ">>> " );
+			UART_print( text );
+			UART_print( " <<<\r\n" );
+
+			fault( "wrong command" );
+		}
+
+		value+= num;
 	}
 
 	return value * char_mult;

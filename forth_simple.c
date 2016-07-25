@@ -5,7 +5,6 @@
 #include "user_interface.h"
 #include <stdio.h>
 
-
 void parentheses()
 {
 	if (state == RUN)
@@ -25,7 +24,6 @@ void define()
 }
 
 
-
 void forth_add()
 {
 	push( pop() + pop() );
@@ -42,7 +40,7 @@ void forth_div()
 	cell_t tmp = pop();
 	if( tmp == 0 )
 	{
-		fault( "division on zero" );
+		fault( "division by zero" );
 	}
 	push( (cell_t)(pop() / tmp) );
 }
@@ -57,7 +55,7 @@ void forth_mod()
 	cell_t tmp = pop();
 	if( tmp == 0 )
 	{
-		fault( "division on zero" );
+		fault( "division by zero" );
 	}
 	push( pop() % tmp );
 }
@@ -69,7 +67,7 @@ void forth_divmod()
 
 	if( last == 0 )
 	{
-		fault( "division on zero" );
+		fault( "division by zero" );
 	}
 
 	push( (cell_t)(last / first) );
@@ -204,5 +202,37 @@ void forth_print()
 		//printf( "%d\n", (int)datastack.data[ datastack.size-1 ] );
 		Dasha_itoa( (int)datastack.data[ datastack.size-1 ], value );
 		UART_print( value );
+		UART_print( "\r\n" );
 	}
+}
+
+void forth_print_all()
+{
+	if( datastack.size < 1 )
+	{
+		UART_print( "No Have value in stack\r\n" );
+	}
+	else
+	{
+		char value[16];
+		for( int i = 0; i < datastack.size; i++ )
+		{
+			Dasha_itoa( (int)datastack.data[i], value );
+			UART_print( value );
+			UART_putc( ' ' );
+		}
+		UART_print( "\r\n" );
+	}
+}
+
+void forth_setmem()
+{
+	cell_t *ptr = (cell_t*)pop();
+	*ptr = pop();
+}
+
+void forth_getmem()
+{
+	cell_t *ptr = (cell_t*)pop();
+	push( *ptr );
 }

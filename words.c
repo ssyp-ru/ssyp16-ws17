@@ -5,9 +5,7 @@
 #include "forth_simple.h"
 #include "charb.h"
 #include "kernel.h"
-word_mass_t words;
 
-#define cmp cmp
 #define strlen len
 #define strcpy copy
 //int cmp( char *leftWord, char *rightWord );
@@ -44,10 +42,14 @@ void init_words()
 	add_word( "|", &forth_bor );
 
 	add_word( ".", &forth_print );
-	
 	add_word( "(", &parentheses);
 	add_word( "\"", &quote);
 	add_word( ":", &define); 
+
+	add_word( ".S", &forth_print_all );
+
+	add_word( "setmem", &forth_setmem );
+	add_word( "getmem", &forth_getmem );
 }
 
 void add_word( char *name, func wordFunc )

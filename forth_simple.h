@@ -32,4 +32,8 @@
 	void forth_bor();
 
 	void forth_print();
+	void forth_print_all();
+
+	void forth_setmem();
+	void forth_getmem();
 #endif

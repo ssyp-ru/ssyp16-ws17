@@ -7,7 +7,11 @@ cell_t pop()
 {
 	if (datastack.size>0)
 	--datastack.size; else
+<<<<<<< HEAD
 	fault( "data stack null" );
+=======
+	fault( "data stack underflow" );
+>>>>>>> 286ab3220af06a8712f93b7b43a127a9b8c41fbc
 //	return 0x80000000;
 	
 	return datastack.data[datastack.size];

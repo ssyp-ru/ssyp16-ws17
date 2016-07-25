@@ -17,6 +17,8 @@ int main ()
 
 	func foo;
 
+	emit_push( 4 );
+
 	while(1)
 	{
 		get_user_input( input );

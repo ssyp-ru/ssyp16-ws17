@@ -175,7 +175,7 @@ void forth_print()
 {
 	if( datastack.size < 1 )
 	{
-		UART_print( "No Have value in stack\r\n" );
+		UART_print( "stack underflow\r\n" );
 	}
 	else
 	{
@@ -191,7 +191,7 @@ void forth_print_all()
 {
 	if( datastack.size < 1 )
 	{
-		UART_print( "No Have value in stack\r\n" );
+		UART_print( "stack underflow\r\n" );
 	}
 	else
 	{

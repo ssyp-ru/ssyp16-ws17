@@ -111,36 +111,16 @@ int cmp( char *f, char *s )
 
 int int_from_char( char ch )
 {
-	switch ((int)ch)
+	if( ch >= '0' && ch <= '9' )
 	{
-		case 'a':
-			return 10;
-		case 'b':
-			return 11;
-		case 'c':
-			return 12;
-		case 'd':
-			return 13;
-		case 'e':
-			return 14;
-		case 'f':
-			return 15;
-		case 'A':
-			return 10;
-		case 'B':
-			return 11;
-		case 'C':
-			return 12;
-		case 'D':
-			return 13;
-		case 'E':
-			return 14;
-		case 'F':
-			return 15;
-		default:
-			if( (int)ch - 48 > 9 ){ return -1; }
-			return ((int)ch - 48);
+		return (ch - '0');
 	}
+	else if( ch >= 'a' && ch <= 'f' )
+	{
+		return (ch - 'a' + 10);
+	}
+
+	return (ch - 'A' + 10);
 }
 
 int string_to_int( char *text ) //by dima
@@ -188,7 +168,7 @@ int string_to_int( char *text ) //by dima
 			UART_print( text );
 			UART_print( " <<<\r\n" );
 
-			fault( "wrong command" );
+			fault( "unknown command" );
 		}
 
 		value+= num;

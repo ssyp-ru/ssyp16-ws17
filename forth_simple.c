@@ -5,6 +5,25 @@
 #include "user_interface.h"
 #include <stdio.h>
 
+void parentheses()
+{
+	if (state == RUN)
+		state = R_DUMMY; 
+	else
+		state = C_DUMMY;
+}
+
+void quote()
+{
+	state = LITERUL;
+}
+
+void define()
+{
+	state = COMPILE;
+}
+
+
 void forth_add()
 {
 	push( pop() + pop() );

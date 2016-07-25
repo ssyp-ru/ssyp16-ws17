@@ -1,6 +1,10 @@
 #ifndef __FORTH_SIMPLE__
 #define __FORTH_SIMPLE__
 
+	void parentheses()
+	void quote()
+	void define()
+
 	void forth_add();
 	void forth_sub();
 	void forth_div();

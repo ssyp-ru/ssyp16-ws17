@@ -48,8 +48,8 @@ void init_words()
 
 	add_word( ".S", &forth_print_all );
 
-	add_word( "setmem", &forth_setmem );
-	add_word( "getmem", &forth_getmem );
+	add_word( "@", &forth_setmem );
+	add_word( "!", &forth_getmem );
 }
 
 void add_word( char *name, func wordFunc )

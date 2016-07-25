@@ -26,23 +26,29 @@ void flash_write32(uint32_t num, uintptr_t ptr){
 }
 
 int flash_have_memory_dict(size_t num_bite){
-	if (num_bite <=  (flash_dict_now & ~0x1FF) + 1024 - flash_dict_now - 2 )
+	if (num_bite * 4 <= (flash_dict_now & ~0x3FF) + 1024 - flash_dict_now - 2 )
 		return 1;
 	else
 		return 0;
 }
 
 int flash_have_memory_code(size_t num_bite){
-	if (num_bite <=  (flash_dict_now & ~0x1FF) + 1024 - flash_dict_now - 2 )
+	if (num_bite * 4 <= (flash_code_now & ~0x3FF) + 1024 - flash_code_now - 2 )
 		return 1;
 	else
 		return 0;
 }
 
-uintptr_t flash_alloc(){
-	if ((flash_dict_now & ~0x1FF) + 1024 + 1 > (flash_code_now & ~0x1FF) + 1024 + 1)
-	return (flash_dict_now & ~0x1FF) + 1024 + 1 * 4;
-	return (flash_code_now & ~0x1FF) + 1024 + 1 * 4;
+uintptr_t flash_alloc_dict(){
+	if ((flash_dict_now & ~0x3FF) > (flash_code_now & ~0x3FF))
+	return (flash_dict_now & ~0x3FF) + 1024;
+	return (flash_code_now & ~0x3FF) + 1024;
+}
+
+uintptr_t flash_alloc_code(){
+	if ((flash_dict_now & ~0x3FF) > (flash_code_now & ~0x3FF))
+	return (flash_dict_now & ~0x3FF) + 1024;
+	return (flash_code_now & ~0x3FF) + 1024;
 }
 
 uintptr_t where_write_dict(size_t num_bite){
@@ -53,8 +59,42 @@ uintptr_t where_write_dict(size_t num_bite){
 		flash_write32(END_OF_PAGE, flash_dict_now);
 		flash_dict_now +=1*4;
 		fn =flash_dict_now;
-		flash_write32(flash_dict_now = result = flash_alloc(), fn);
+		flash_write32(flash_dict_now = result = flash_alloc_dict(), fn);
 		return result;
+	}
+}
+
+void initialize_dict(){
+	uintptr_t *help;
+	while(1){
+		help = (uintptr_t *)((flash_dict_now & ~0x3FF) + 1024 - 1 * 4);
+		while((*help == 0xFFFFFFFF) && (help >= ((uintptr_t *)((flash_dict_now & ~0x3FF))))){
+			help-=1;
+		}
+		if (*(help-1) == END_OF_PAGE)
+				flash_dict_now = *help;
+		else
+		{
+			flash_dict_now = (uintptr_t)(help+1);
+			break;
+		}
+	}
+}
+
+void initialize_code(){
+	uintptr_t *help;
+	while(1){
+		help = (uintptr_t *)((flash_code_now & ~0x3FF) + 1024 - 1 * 4);
+		while((*help == 0xFFFFFFFF) && (help >= ((uintptr_t *)((flash_code_now & ~0x3FF))))){
+			help-=1;
+		}
+		if (*(help-1) == END_OF_PAGE)
+				flash_code_now = *help;
+		else
+		{
+			flash_code_now = (uintptr_t)(help+1);
+			break;
+		}
 	}
 }
 
@@ -66,7 +106,7 @@ uintptr_t where_write_code(size_t num_bite){
 		flash_write32(END_OF_PAGE, flash_code_now);
 		flash_code_now +=1*4;
 		fn =flash_code_now;
-		flash_write32(flash_code_now = flash_alloc(), fn);
+		flash_write32(flash_code_now = flash_alloc_code(), fn);
 		return flash_code_now;
 	}
 }

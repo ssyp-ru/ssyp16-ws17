@@ -13,6 +13,10 @@ void flash_write_code(uint32_t *num, size_t leng_int);
 
 void flash_write_dict(uint32_t *num, size_t leng_int);
 
+void initialize_dict();
+
+void initialize_code()
+
 uintptr_t where_write_code(size_t num_bite);
 
 uintptr_t where_write_dict(size_t num_bite);

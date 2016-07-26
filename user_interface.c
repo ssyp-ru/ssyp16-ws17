@@ -118,6 +118,12 @@ void get_user_inputs( char *line )
 			continue;
 		}
 
+		if( inChar == 0x1B )
+		{
+			inChar = UART_getc();
+			continue;
+		}
+
 		line[count] = inChar;
 
 		count++;

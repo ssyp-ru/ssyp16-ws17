@@ -162,7 +162,7 @@ int string_to_int( char *text ) //by dima
 		value*= mult;
 		num = int_from_char(text[i]);
 
-		if( num < 0 )
+		if( num < 0 || num > 16 )
 		{
 			UART_print( ">>> " );
 			UART_print( text );

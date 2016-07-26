@@ -19,12 +19,6 @@ void quote()
 	state = LITERAL;
 }
 
-void define()
-{
-	state = COMPILE;
-}
-
-
 void forth_add()
 {
 	push( pop() + pop() );

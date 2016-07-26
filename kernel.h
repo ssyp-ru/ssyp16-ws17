@@ -19,4 +19,7 @@
 	void c_dummy_handler(char * word);
 	void literul_handler(char * word);
 
+	void compile_start();
+	void compile_end();
+
 #endif

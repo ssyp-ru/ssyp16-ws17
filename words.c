@@ -45,7 +45,9 @@ void init_words()
 	add_word( ".", &forth_print );
 	add_word( "(", &parentheses);
 	add_word( "\"", &quote);
-	add_word( ":", &define); 
+
+	add_word( ":", &define);
+	add_word( ";", &compile_end);
 
 	add_word( ".S", &forth_print_all );
 

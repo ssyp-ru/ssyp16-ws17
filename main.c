@@ -5,7 +5,7 @@
 #include "kernel.h"
 
 int main ()
-{
+	{
 	init_UART();
 
 	for( uint64_t i = 0; i < 250000; i++ ){;}//delay

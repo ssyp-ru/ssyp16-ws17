@@ -11,9 +11,9 @@ const uintptr_t
 	END_FLASH=0x50000,
 	END_OF_PAGE = 0xFFFFF;
 
-uintptr_t flash_dict_now = 0xB600;
+uintptr_t flash_dict_now = 0xB800;
 
-uintptr_t flash_code_now = 0xB600 + 1024;
+uintptr_t flash_code_now = 0xB800 + 1024;
 
 void flash_write32(uint32_t num, uintptr_t ptr){
 	*((uint32_t *)(BASE_FLASH_REGISTER + OFFSET_FMD)) = num;

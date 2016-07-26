@@ -5,6 +5,8 @@ extern uintptr_t flash_dict_now;
 
 extern uintptr_t flash_code_now;
 
+extern uintptr_t END_OF_PAGE;
+
 void flash_page_erase(uintptr_t ptr);
 
 void flash_mass_erase();
@@ -15,7 +17,7 @@ void flash_write_dict(uint32_t *num, size_t leng_int);
 
 void initialize_dict();
 
-void initialize_code()
+void initialize_code();
 
 uintptr_t where_write_code(size_t num_bite);
 

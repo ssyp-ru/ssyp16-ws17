@@ -19,7 +19,7 @@
 		int word_count;
 	} word_mass_t;
 
-	extern word_mass_t worlds;
+	extern word_mass_t words;
 
 	void init_words();
 

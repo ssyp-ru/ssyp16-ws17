@@ -38,48 +38,51 @@ uint32_t swap_32b( uint32_t data )
 
 uint32_t emit_bl( uint32_t start, uint32_t offset )
 {
-	int S = 0;
+	int S = 1;
 
 	offset-= start;
 
 	if( offset < 0 )
 	{
-		S = 1;
+		S = 0;
 		offset*= -1;
 	}
 
-	uint16_t imm11 = offset >> 1;
-	imm11&= 0b0000011111111111;
+	uint16_t ready[2] = {0};
+	uint16_t part[3] = {0};
 
-	uint16_t imm10 = offset >> 12;
-	imm10&= 0b0000001111111111;
+	part[0] = ( offset & 0b111111111110 ) >> 1;
+	part[1] = ( offset >> 12 ) & 0b1111111111;
 
-	uint8_t j = offset >> 21;
-	//j&= 0b00000011;
+	part[2] = ( offset >> 22 ) & 0b11;
+
 	if( !S )
 	{
-		j = ~j;
+		part[2]^= 0b11;
 	}
 
-	j&= 0b00000011;
+	ready[0] = 0b1111000000000000;
+	ready[1] = 0b1101000000000000;
 
-	uint32_t ready;
+	ready[1]|= part[0];
+	ready[0]|= part[1];
 
-	ready = 0b111100 << 10;
-	ready|= S;
-	ready|= imm10;
+	ready[1]|= ( part[2] & 0b1 ) << 11;
+	ready[1]|= ( part[2] & 0b10 ) << 13;
 
-	ready = ready << 5;
-	ready|= 0b11010;
+	ready[0]|= S << 10;
 
-	ready|= j&0b01;
+	return *((uint32_t*) ready );
+}
 
-	ready|= (j&0b10) << 1;
+uint16_t emit_blx( int regist )
+{
+	uint16_t ready = 0b0100011110000000;
+	regist&= 0b1111;
 
-	ready = ready << 11;
-	ready|= imm11;
+	ready|= regist << 3;
 
-	return (swap_32b( ready ));
+	return ready;
 }
 
 //0-7 = R0-R7 registr, 8 = LR
@@ -88,7 +91,7 @@ uint16_t emit_push( int registr )
 	uint16_t ready = 0b1011010000000000;
 	ready|= 1 << registr;
 
-	return (swap_16b( ready ));
+	return ( ready );
 }
 
 uint16_t emit_pop( int registr )
@@ -96,7 +99,7 @@ uint16_t emit_pop( int registr )
 	uint16_t ready = 0b1011110000000000;
 	ready|= 1 << registr;
 
-	return (swap_16b( ready ));
+	return ( ready );
 }
 
 //offset = {0,1020}
@@ -105,14 +108,16 @@ uint16_t emit_ldr_short( int offset, int registr )
 	uint16_t ready = 0b0100100000000000;
 	registr&= 0b111;
 
-	reeady|= (uint8_t)(offset >> 2);
+	ready|= (uint8_t)(offset >> 2);
 
-	return (swap_16b( ready ));
+	ready|= registr << 8;
+
+	return ( ready );
 }
 
-uint32_t emit_ldr_long( int offset, int registr )
+uint32_t emit_ldr_long( uint16_t offset, uint8_t registr, uint8_t add )
 {
-	uint32_t ready = 0b1111100011011111;
+	/*uint32_t ready = 0b1111100011011111;
 
 	if( offset < 0 )
 	{
@@ -126,5 +131,48 @@ uint32_t emit_ldr_long( int offset, int registr )
 	ready = ready << 12;
 	ready|= ( offset & 0b111111111111 );
 
-	return (swap_32b( ready ));
+	return ( ready );*/
+	uint16_t part[2];
+
+	part[0] = 0b1111100011011111;
+	part[1] = offset & 0b111111111111;
+	part[1]|= ( registr & 0b111 ) << 12;
+
+	part[0]|= ( add & 0b1 ) << 7;
+
+	uint32_t ready = *((uint32_t*)part);
+
+	return ready;
+}
+
+uint16_t emit_mov( int sourse, int target )
+{
+	uint16_t ready = 0;
+
+	sourse&= 0b111;
+	target&= 0b111;
+
+	ready = target;
+	ready|= sourse << 3;
+
+	return ( ready );
+}
+
+uint16_t emit_cmp( uint8_t first, uint8_t two )
+{
+	uint16_t ready = 0b0100001010000000;
+
+	ready|= ( first & 0b111 ) << 3;
+	ready|= two & 0b111;
+
+	return ready;
+}
+
+uint16_t emit_beq( uint8_t offset )
+{
+	uint16_t ready = 0b1101000000000000;
+
+	ready|= ( offset & 0b111111110 ) >> 1;
+
+	return ready;
 }

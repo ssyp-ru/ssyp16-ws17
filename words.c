@@ -3,12 +3,13 @@
 #include "words.h"
 #include "fault.h"
 #include "forth_simple.h"
-#include "charb.h"
 #include "kernel.h"
 
 #define strlen len
 #define strcpy copy
 //int cmp( char *leftWord, char *rightWord );
+
+word_mass_t words;
 
 void init_words()
 {

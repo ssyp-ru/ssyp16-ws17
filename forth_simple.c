@@ -3,6 +3,7 @@
 #include "fault.h"
 #include "forth_simple.h"
 #include "user_interface.h"
+#include "kernel.h"
 #include <stdio.h>
 
 void parentheses()
@@ -15,7 +16,7 @@ void parentheses()
 
 void quote()
 {
-	state = LITERUL;
+	state = LITERAL;
 }
 
 void define()

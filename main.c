@@ -1,7 +1,6 @@
 #include "user_interface.h"
 #include "stack.h"
 #include "words.h"
-#include "pwm.h"
 
 int main ()
 {

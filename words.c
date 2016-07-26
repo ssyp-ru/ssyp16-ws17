@@ -1,8 +1,10 @@
 //#include <string.h>
-#include <stdio.h>
+//#include <stdio.h>
 #include "words.h"
 #include "fault.h"
 #include "forth_simple.h"
+#include "flash.h"
+#include "string.h"
 
 word_mass_t words;
 
@@ -47,6 +49,33 @@ void init_words()
 
 	add_word( "setmem", &forth_setmem );
 	add_word( "getmem", &forth_getmem );
+}
+
+void word_to_flash(char *name_wrd, func *fnc){
+	word_t wrd;
+	copy(*(wrd.name), *name_wrd);
+	wrd.funcptr = fnc;
+	flash_write_dict (,);  	
+}
+
+void read_word(){
+	uintptr_t *help = (uintptr_t *)((flash_dict_now & ~0x3FF));
+	char h[sizeof(word_t)*WORD_COUNT];
+	int it = 0;
+
+	while(1){
+		while((*help != END_OF_PAGE) && (help <= ((uintptr_t *)((flash_dict_now & ~0x3FF))) + 1024 - 1 * 4)){
+			++help;
+			h[++it] = *help;
+		}
+		if (*help == END_OF_PAGE)
+		{
+			help = (uintptr_t *)*(help+1);
+			--it;
+		}
+		else
+		break;
+	}
 }
 
 void add_word( char *name, func wordFunc )
@@ -98,10 +127,11 @@ void add_word( char *name, func wordFunc )
 	words.word_array[word_pos].funcptr = wordFunc; //paste new word
 }
 
-func get_word( char *name)
+/*func get_word( char *name)
 {
 	int cmp_result;
 	for( int i = 0; i <= words.word_count; i++ )
+
 	{
 		cmp_result = cmp( name, words.word_array[i].name );
 
@@ -116,6 +146,31 @@ func get_word( char *name)
 	}	
 		
 	return 0;
+}*/
+
+func get_word( char *name)
+{
+	int cmp_result, i, a, b;
+	i = words.word_count / 2;
+	a = 0;
+	b = words.word_count - 1;
+	while( words.word_array[i].name != name)
+	{
+		cmp_result = cmp( name, words.word_array[i].name );
+
+		if( cmp_result == 0 )
+		{
+			b = i;
+			i = (a+b)/2;
+		}
+		else
+		{
+			a = i;
+			i = (a+b)/2;
+		}
+	}
+
+	return words.word_array[i].funcptr;
 }
 
 void rm_word( char *name )

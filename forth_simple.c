@@ -3,7 +3,7 @@
 #include "fault.h"
 #include "forth_simple.h"
 #include "user_interface.h"
-#include <stdio.h>
+//#include <stdio.h>
 
 void forth_add()
 {

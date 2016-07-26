@@ -1,11 +1,12 @@
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
 extern uintptr_t flash_dict_now;
 
 extern uintptr_t flash_code_now;
 
-extern uintptr_t END_OF_PAGE;
+extern const uintptr_t END_OF_PAGE;
 
 void flash_page_erase(uintptr_t ptr);
 

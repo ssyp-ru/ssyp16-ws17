@@ -236,11 +236,11 @@ void compile_end()
 		pos+= 2;
 	}
 
-	//uintptr_t flash_ptr = where_write( pos * 2 );
-	add_word( asm_compiler.name, ((func)bin)+1 );
+	uintptr_t flash_ptr = where_write( pos * 2 );
+	add_word( asm_compiler.name, ((func)flash_ptr)+1 );
 
-	// flash_free = flash_have_memory( pos * 2 );
-	//flash_write( bin, pos / 2, flash_ptr );
+	//flash_free = flash_have_memory( pos * 2 );
+	flash_write( bin, pos / 2, flash_ptr );
 
 	state = RUN;
 }

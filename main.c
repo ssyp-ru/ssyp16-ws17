@@ -34,10 +34,10 @@ int main ()
 
 	func test_foo_c = (func)(((uintptr_t)test_foo)+1);
 
-	if( pop() != 0)
-	{
-		push(48);
-	}
+	//if( pop() != 0)
+	//{
+	//	push(48);
+	//}
 
 	test_foo_c();
 

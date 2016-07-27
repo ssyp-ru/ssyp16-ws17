@@ -12,5 +12,7 @@
 	uint16_t emit_pop( int registr );
 	uint16_t emit_mov( int sourse, int target );
 	uint16_t emit_blx( int regist );
+	uint16_t emit_b( uint16_t offset );
+	uint16_t emit_cmp_lt( uint8_t registr, uint8_t value );
 
 #endif

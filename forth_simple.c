@@ -119,9 +119,9 @@ void forth_rot()
 	cell_t midle = pop();
 	cell_t last  = pop();
 
-	push( last  );
+	push( midle  );
 	push( first );
-	push( midle );
+	push( last );
 }
 
 void forth_crot()
@@ -200,7 +200,7 @@ void forth_print()
 	{
 		char value[16];
 		//printf( "%d\n", (int)datastack.data[ datastack.size-1 ] );
-		Dasha_itoa( (int)datastack.data[ datastack.size-1 ], value );
+		Dasha_itoa( (int)pop(), value );
 		UART_print( value );
 		UART_print( "\r\n" );
 	}

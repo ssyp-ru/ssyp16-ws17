@@ -124,9 +124,11 @@ void flash_write_dict(uint32_t *num, size_t leng_int){
 	flash_dict_now += leng_int * 4;
 }
 
-void flash_write_code(uint32_t *num, size_t leng_int){
-	flash_write(num, leng_int, where_write_code(leng_int));
+uintptr_t flash_write_code(uint32_t *num, size_t leng_int){
+	uintptr_t pos = where_write_code(leng_int);
+	flash_write(num, leng_int, pos );
 	flash_code_now += leng_int * 4;
+	return pos;
 }
 
 void flash_page_erase(uintptr_t ptr){

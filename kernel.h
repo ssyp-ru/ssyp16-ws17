@@ -10,6 +10,8 @@
 		LITERAL = 4
 	};
 
+	typedef enum status status_t;
+
 	extern enum status state;
 
 	void dispatch();

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "kernel.h"
 
 #ifndef __WORDS__
 #define __WORDS__
@@ -11,6 +12,7 @@
 	{
 		char name[32];
 		func funcptr;
+		char flag;
 	} word_t;
 
 	typedef struct word_mass
@@ -19,12 +21,19 @@
 		int word_count;
 	} word_mass_t;
 
+	typedef enum word_flag_en
+	{
+		asm_run_only = 0b1,
+		reset = 0b10
+	} word_flag_t;
+
 	extern word_mass_t words;
 
 	void init_words();
 
-	func get_word( char *name );
-	void add_word( char *name, func wordFunc );
+	func get_word( char *name, status_t stat );
+	char get_word_flag( char *word, word_flag_t flag );
+	void add_word( char *name, func wordFunc, char flag );
 	void rm_word( char *name );
 	
 	void initWords();

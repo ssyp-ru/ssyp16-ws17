@@ -6,7 +6,7 @@
 #include "flash.h"
 
 int main ()
-{
+	{
 	init_UART();
 
 	for( uint64_t i = 0; i < 250000; i++ ){;}//delay
@@ -18,7 +18,7 @@ int main ()
 
 	uint16_t test_foo[64];
 
-	char *ver = "  v0.2    by ws17\r\n";
+	char *ver = "  v0.3    by ws17\r\n";
 
 	test_foo[0] = emit_push(8);
 	test_foo[1] = emit_ldr_short( 12, 0 );

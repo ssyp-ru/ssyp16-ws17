@@ -46,7 +46,7 @@ void r_dummy_handler(char * word)
 
 void run_handler(char * word)
 {
-	func word_a = get_word(word);
+	func word_a = get_word( word, RUN );
 	if(word_a == NULL)
 	{
 		int num;
@@ -67,7 +67,11 @@ typedef enum asm_type_enum
 	ldr_long_a = 4,
 	blx = 5,
 	pushs = 6,
-	asm_cmp = 7
+	cmpd = 7,
+	move_r = 8,
+	beq = 9,
+	b = 10,
+	nope = 11
 } asm_type_t;
 
 typedef struct asm_commands_st
@@ -83,10 +87,17 @@ typedef struct asm_data_st
 	size_t count;
 } asm_data_t;
 
+typedef struct asm_offset_st
+{
+	uintptr_t offset[64];
+	size_t count;
+} asm_offset_t;
+
 typedef struct asm_compiler_st
 {
 	asm_commands_t asm_commands;
 	asm_data_t asm_data;
+	asm_offset_t asm_offset;
 	char name[64];
 } asm_compiler_t;
 
@@ -94,6 +105,7 @@ asm_compiler_t asm_compiler;
 
 #define asm_commands asm_compiler.asm_commands // too many words aaaaaaaaaaa
 #define asm_data asm_compiler.asm_data
+#define asm_offset asm_compiler.asm_offset
 
 void compile_handler(char * word)
 {
@@ -103,12 +115,14 @@ void compile_handler(char * word)
 		return;
 	}
 
-	func foo = get_word( word );
-	if( foo == compile_end )
+	func foo = get_word( word, COMPILE );
+	if( foo != 0 )
 	{
 		foo();
 		return;
 	}
+
+	foo = get_word( word, RUN );
 
 	if( foo != NULL )
 	{
@@ -151,6 +165,7 @@ void define()
 	asm_data.count = 0;
 	asm_commands.real_size = 0;
 	asm_compiler.name[0] = 0;
+	asm_offset.count = 0;
 }
 
 void compile_end()
@@ -160,6 +175,7 @@ void compile_end()
 	uint16_t data_pos = 0;
 	uint16_t data_offset;
 	int pos = 1;
+	int cpos = 0;
 
 	int registr = 0;
 
@@ -173,6 +189,23 @@ void compile_end()
 
 		switch (asm_commands.commands[i])
 		{
+		case cmpd:
+			bin[pos] = emit_cmp_lt( 0, 0 );
+			pos++;
+
+			break;
+		case beq:
+			bin[pos] = emit_beq( asm_offset.offset[cpos] );
+			pos++;
+			cpos++;
+
+			break;
+		case b:
+			bin[pos] = emit_b( asm_offset.offset[cpos] - 2 );
+			pos++;
+			cpos++;
+
+			break;
 		case ldr_long_b:
 			registr = 2;
 		case ldr_long_a:
@@ -210,6 +243,12 @@ void compile_end()
 			pos++;
 
 			break;
+		case nope:
+
+			bin[pos] = 0xBF00;
+			pos++;
+
+			break;
 		};
 	}
 
@@ -226,9 +265,10 @@ void compile_end()
 	}
 
 	//uintptr_t flash_pos = where_write_code( pos / 2 );
-	add_word( asm_compiler.name, ((func)flash_code_now)+1 );
 
-	flash_write_code( bin, (pos+1) / 2 );
+	uintptr_t flash_pos = flash_write_code( bin, (pos+1) / 2 );
+	add_word( asm_compiler.name, ((func)flash_pos)+1, 0 );
+
 
 	state = RUN;
 }
@@ -252,19 +292,50 @@ void literul_handler(char * word)
 
 void forth_if()
 {
-	cpush( asm_commands.real_size );
+	asm_commands.commands[asm_commands.count] = ldr_long_b;
+	asm_commands.commands[asm_commands.count+1] = blx;
+	asm_commands.commands[asm_commands.count+2] = cmpd;
+	asm_commands.commands[asm_commands.count+3] = beq;
+	asm_commands.commands[asm_commands.count+4] = nope;
+
+	asm_commands.count+= 5;
+	asm_commands.real_size+= 12;
+
+	asm_data.data[asm_data.count] = &pop;
+
+	asm_data.count++;
+
+	asm_offset.offset[asm_offset.count] = asm_commands.real_size;
+
+	cpush( asm_offset.count );
 	cpush( 0 );
 
-	//asm_commands.commands[asm_commands.count] = ;
+	asm_offset.count++;
 }
 
 void forth_else()
 {
-	cpush( asm_commands.real_size );
+	cpop();
+	int pos = cpop();
+	cell_t offset = asm_commands.real_size - asm_offset.offset[pos];
+
+	asm_offset.offset[pos] = offset + 2;
+	asm_offset.offset[asm_offset.count] = asm_commands.real_size + 2;
+	asm_offset.count++;
+
+	cpush( asm_offset.count-1 );
 	cpush( 1 );
+
+	asm_commands.commands[asm_commands.count] = b;
+	asm_commands.count++;
+	asm_commands.real_size+= 2;
 }
 
 void forth_then()
 {
+	cpop();
+	int pos = cpop();
+	cell_t offset = asm_commands.real_size - asm_offset.offset[pos];
 
+	asm_offset.offset[pos] = offset;
 }

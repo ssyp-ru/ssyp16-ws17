@@ -25,7 +25,7 @@ void drop_to_main()
 	bin[4] = &main;
 	bin[5] = 0;
 
-	(func)
+//	(func)
 }
 
 void fault( char *error )

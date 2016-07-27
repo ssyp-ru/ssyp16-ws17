@@ -59,10 +59,12 @@ void init_words()
 
 void word_to_flash(char *name_wrd, func *fnc){
 	word_t wrd;
-	copy(*(wrd.name), *name_wrd);
+	copy(wrd.name, name_wrd);
 	wrd.funcptr = fnc;
-//	flash_write_dict (,);
+	flash_write_dict (&wrd, WORD_LENGTH);    
 }
+
+
 
 /*void read_word(){
 	uintptr_t *help = (uintptr_t *)((flash_dict_now & ~0x3FF));

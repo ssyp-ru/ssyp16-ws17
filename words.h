@@ -4,7 +4,7 @@
 #define __WORDS__
 
 	#define WORD_COUNT 256
-
+	#define WORD_LENGTH 9
 	typedef void (*func)(void);
 
 	typedef struct word

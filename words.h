@@ -23,6 +23,8 @@
 
 	void init_words();
 
+	void word_to_flash(char *name_wrd, func *fnc);
+
 	func get_word( char *name );
 	void add_word( char *name, func wordFunc );
 	void rm_word( char *name );

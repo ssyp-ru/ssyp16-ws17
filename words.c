@@ -59,12 +59,74 @@ void init_words()
 
 void word_to_flash(char *name_wrd, func *fnc){
 	word_t wrd;
+	for(int c = 0; c < 32; c++){
+		wrd.name[c] = 0;
+	}
 	copy(wrd.name, name_wrd);
 	wrd.funcptr = fnc;
-	flash_write_dict (&wrd, WORD_LENGTH);    
+	flash_write_dict (&wrd, (sizeof (word_t)) / 4);
 }
 
+void init_words_to_flash()
+{
+	word_to_flash( "+", &forth_add );
+	word_to_flash( "-", &forth_sub );
+	word_to_flash( "/", &forth_div );
+	word_to_flash( "*", &forth_mul );
+	word_to_flash( "%", &forth_mod );
+	word_to_flash( "/%", &forth_divmod );
 
+	word_to_flash( "swap", &forth_swap );
+	word_to_flash( "dup", &forth_dup );
+	word_to_flash( "rot", &forth_rot );
+	word_to_flash( "drop", &forth_drop );
+
+	word_to_flash( "cswap", &forth_cswap );
+	word_to_flash( "cdup", &forth_cdup );
+	word_to_flash( "crot", &forth_crot );
+	word_to_flash( "cdrop", &forth_cdrop );
+
+	word_to_flash( "&&", &forth_and );
+	word_to_flash( "||", &forth_or );
+
+	word_to_flash( "<", &forth_low );
+	word_to_flash( "<=", &forth_lowe );
+
+	word_to_flash( ">", &forth_hight );
+	word_to_flash( ">=", &forth_highte );
+
+	word_to_flash( "&", &forth_band );
+	word_to_flash( "|", &forth_bor );
+
+	word_to_flash( ".", &forth_print );
+	word_to_flash( "(", &parentheses);
+	word_to_flash( "\"", &quote);
+
+	word_to_flash( ":", &define);
+	word_to_flash( ";", &compile_end);
+	word_to_flash( "|", &forth_bor );
+
+	word_to_flash( ".", &forth_print );
+	word_to_flash( "(", &parentheses);
+	word_to_flash( "\"", &quote);
+	word_to_flash( "|", &forth_bor );
+
+	word_to_flash( ".", &forth_print );
+	word_to_flash( "(", &parentheses);
+	word_to_flash( "\"", &quote);
+	word_to_flash( "|", &forth_bor );
+
+	word_to_flash( ".", &forth_print );
+	word_to_flash( "(", &parentheses);
+	word_to_flash( "\"", &quote);
+
+	word_to_flash( ".S", &forth_print_all );
+
+	word_to_flash( "@", &forth_setmem );
+	word_to_flash( "!", &forth_getmem );
+}
+
+//void flash_to_word ()
 
 /*void read_word(){
 	uintptr_t *help = (uintptr_t *)((flash_dict_now & ~0x3FF));
@@ -86,6 +148,16 @@ void word_to_flash(char *name_wrd, func *fnc){
 	}
 }*/
 
+void word_from_flash(uintptr_t addr_in_flash){
+	char name_wrd[32];
+	func func_wrd;
+	int *word_in_flash = (char *)addr_in_flash;
+	copy(name_wrd[32], *word_in_flash);
+	word_in_flash += 32;
+	func_wrd = *word_in_flash;
+	add_word(name_wrd, func_wrd);
+}
+
 void add_word( char *name, func wordFunc )
 {
 	if( strlen( name ) >= 32 )
@@ -96,7 +168,7 @@ void add_word( char *name, func wordFunc )
 	if( words.word_count >= WORD_COUNT )
 	{
 		fault( "too many words" );
-	}	
+	}
 
 	int word_pos = 0; //pos for new word
 	int cmp_result;
@@ -121,7 +193,7 @@ void add_word( char *name, func wordFunc )
 		
 	} //calc pos for new word
 
-	if( word_pos != words.word_count ) //chech: need move old words?
+	if( word_pos != words.word_count ) //check: need move old words?
 	{
 		for( int i = words.word_count; i >= word_pos; i-- )
 		{

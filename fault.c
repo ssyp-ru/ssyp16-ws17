@@ -3,6 +3,7 @@
 #include "fault.h"
 #include "kernel.h"
 #include "words.h"
+#include "user_interface.h"
 
 extern void ResetISR(); // bad magic
 

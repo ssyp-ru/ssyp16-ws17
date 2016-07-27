@@ -4,9 +4,14 @@
 #include "asm_compiler.h"
 #include "kernel.h"
 #include "flash.h"
+#include "forth_simple.h"
 
-int main ()
-	{
+int main (){
+	init_words();
+	word_to_flash("+", &forth_add);
+	return 0;
+}
+/*	{
 	init_UART();
 
 	for( uint64_t i = 0; i < 250000; i++ ){;}//delay
@@ -34,7 +39,7 @@ int main ()
 	test_foo[6] = (UART_print)+1;
 	test_foo[7] = 0x0;
 	test_foo[9] = ( (uint32_t)ver ) >> 16;
-	test_foo[8] = (uint16_t)ver;
+	test_foo[8] = (uint16_t)ver;*/
 	//test_foo[10] = 0x0;
 
 	/*uint32_t ldr = emit_ldr_long( 10, 1 );
@@ -52,11 +57,11 @@ int main ()
 	test_foo[9] = 1;
 	test_foo[10] = 1;*/
 
-	func test_foo_c = (func)(((uintptr_t)test_foo)+1);
-
-	test_foo_c();
-
-	dispatch();
-
-	return 0;
-}
+//	func test_foo_c = (func)(((uintptr_t)test_foo)+1);
+//
+//	test_foo_c();
+//
+//	dispatch();
+//
+//	return 0;
+//}

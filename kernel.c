@@ -7,6 +7,7 @@
 #include "kernel.h"
 #include "user_interface.h"
 #include "flash.h"
+#include "asm_compiler.h"
 
 enum status state = RUN;
 char buffer[255], word[64];
@@ -65,7 +66,8 @@ typedef enum asm_type_enum
 	ldr_long_b = 3,
 	ldr_long_a = 4,
 	blx = 5,
-	pushs = 6
+	pushs = 6,
+	asm_cmp = 7
 } asm_type_t;
 
 typedef struct asm_commands_st
@@ -245,5 +247,24 @@ void literul_handler(char * word)
 	{
 		state = COMPILE;
 	}
+
+}
+
+void forth_if()
+{
+	cpush( asm_commands.real_size );
+	cpush( 0 );
+
+	//asm_commands.commands[asm_commands.count] = ;
+}
+
+void forth_else()
+{
+	cpush( asm_commands.real_size );
+	cpush( 1 );
+}
+
+void forth_then()
+{
 
 }

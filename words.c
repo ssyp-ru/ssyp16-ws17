@@ -41,6 +41,8 @@ void init_words()
 	add_word( ">", &forth_hight );
 	add_word( ">=", &forth_highte );
 
+	add_word( "==", &forth_eq );
+
 	add_word( "&", &forth_band );
 	add_word( "|", &forth_bor );
 
@@ -55,6 +57,10 @@ void init_words()
 
 	add_word( "@", &forth_setmem );
 	add_word( "!", &forth_getmem );
+
+	add_word( "IF", &forth_if );
+	add_word( "ELSE", &forth_else );
+	add_word( "THEN", &forth_then );
 }
 
 void word_to_flash(char *name_wrd, func *fnc){

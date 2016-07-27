@@ -160,6 +160,11 @@ void forth_low()
 	push( (pop() > pop()) ? 1 : 0 );
 }
 
+void forth_eq()
+{
+	push( (pop() == pop()) ? 1 : 0 );
+}
+
 void forth_hight()
 {
 	push( (pop() < pop()) ? 1 : 0);

@@ -22,4 +22,8 @@
 	void compile_start();
 	void compile_end();
 
+	void forth_if();
+	void forth_else();
+	void forth_then();
+
 #endif

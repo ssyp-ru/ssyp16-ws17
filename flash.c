@@ -71,7 +71,7 @@ void initialize_dict(){
 		while((*help == 0xFFFFFFFF) && (help >= ((uintptr_t *)((flash_dict_now & ~0x3FF))))){
 			help-=1;
 		}
-		if (*(help-1) == END_OF_PAGE)
+		if (*(help-1) == END_OF_PAGE && (flash_dict_now + 1024 + 4) != help )
 				flash_dict_now = *help;
 		else
 		{
@@ -88,7 +88,7 @@ void initialize_code(){
 		while((*help == 0xFFFFFFFF) && (help >= ((uintptr_t *)((flash_code_now & ~0x3FF))))){
 			help-=1;
 		}
-		if (*(help-1) == END_OF_PAGE)
+		if (*(help-1) == END_OF_PAGE && (flash_code_now + 1024 + 4) != help )
 				flash_code_now = *help;
 		else
 		{
@@ -124,9 +124,11 @@ void flash_write_dict(uint32_t *num, size_t leng_int){
 	flash_dict_now += leng_int * 4;
 }
 
-void flash_write_code(uint32_t *num, size_t leng_int){
-	flash_write(num, leng_int, where_write_code(leng_int));
+uintptr_t flash_write_code(uint32_t *num, size_t leng_int){
+	uintptr_t pos = where_write_code(leng_int);
+	flash_write(num, leng_int, pos );
 	flash_code_now += leng_int * 4;
+	return pos;
 }
 
 void flash_page_erase(uintptr_t ptr){
@@ -150,3 +152,49 @@ void flash_mass_erase(){
 
 	while (*((uint32_t *)(BASE_FLASH_REGISTER + OFFSET_FMC)) & 0b100); //
 }
+
+
+
+
+
+
+
+
+/*
+uintptr_t now_flash_bin = 0x20000 + 1024;
+uintptr_t now_flash_dic = 0x20000;
+
+uintptr_t flash_bin_page_start = 0x1;
+uintptr_t flash_dic_page_start = 0x1;
+
+uintptr_t found_flash_bin()
+{
+	uintptr_t *bin_now = now_flash_bin;
+
+	while(1)
+	{
+		if( *(bin_now - ((int)bin_now%1024)) != flash_bin_page_start )
+		{
+			if( *(bin_now - ((int)bin_now%1024)) == 0xffffffff )
+			{
+				flash_write32( flash_bin_page_start, *(bin_now - ((int)bin_now%1024)) );
+				return ((*(bin_now - ((int)bin_now%1024))) + 4);
+			}
+			bin_now+= 1024;
+			continue;
+		}
+
+		if( bin_now[0] == 0xffffffff && bin_now[1] == 0x0 )
+		{
+			bin_now+= 12;
+		}
+		else if ( bin_now[0] == 0xffffffff )
+		{
+			bin_now
+		}
+
+	}
+
+	return bin_now;
+}
+*/

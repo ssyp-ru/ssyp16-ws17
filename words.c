@@ -15,46 +15,58 @@ word_mass_t words;
 
 void init_words()
 {
-	add_word( "+", &forth_add );
-	add_word( "-", &forth_sub );
-	add_word( "/", &forth_div );
-	add_word( "*", &forth_mul );
-	add_word( "%", &forth_mod );
-	add_word( "/%", &forth_divmod );
+	add_word( "+", &forth_add, 0 );
+	add_word( "-", &forth_sub, 0 );
+	add_word( "/", &forth_div, 0 );
+	add_word( "*", &forth_mul, 0 );
+	add_word( "%", &forth_mod, 0 );
+	add_word( "/%", &forth_divmod, 0 );
 
-	add_word( "swap", &forth_swap );
-	add_word( "dup", &forth_dup );
-	add_word( "rot", &forth_rot );
-	add_word( "drop", &forth_drop );
+	add_word( "swap", &forth_swap, 0 );
+	add_word( "dup", &forth_dup, 0 );
+	add_word( "rot", &forth_rot, 0 );
+	add_word( "drop", &forth_drop, 0 );
 
-	add_word( "cswap", &forth_cswap );
-	add_word( "cdup", &forth_cdup );
-	add_word( "crot", &forth_crot );
-	add_word( "cdrop", &forth_cdrop );
+	add_word( "cswap", &forth_cswap, 0 );
+	add_word( "cdup", &forth_cdup, 0 );
+	add_word( "crot", &forth_crot, 0 );
+	add_word( "cdrop", &forth_cdrop, 0 );
 
-	add_word( "&&", &forth_and );
-	add_word( "||", &forth_or );
+	add_word( "&&", &forth_and, 0 );
+	add_word( "||", &forth_or, 0 );
 
-	add_word( "<", &forth_low );
-	add_word( "<=", &forth_lowe );
+	add_word( "<", &forth_low, 0 );
+	add_word( "<=", &forth_lowe, 0 );
 
-	add_word( ">", &forth_hight );
-	add_word( ">=", &forth_highte );
+	add_word( ">", &forth_hight, 0 );
+	add_word( ">=", &forth_highte, 0 );
 
-	add_word( "&", &forth_band );
-	add_word( "|", &forth_bor );
+	add_word( "==", &forth_eq, 0 );
 
-	add_word( ".", &forth_print );
-	add_word( "(", &parentheses);
-	add_word( "\"", &quote);
+	add_word( "&", &forth_band, 0 );
+	add_word( "|", &forth_bor, 0 );
 
-	add_word( ":", &define);
-	add_word( ";", &compile_end);
+	add_word( ".", &forth_print, 0 );
+	add_word( "(", &parentheses, 0 );
+	add_word( "\"", &quote, 0 );
 
-	add_word( ".S", &forth_print_all );
+	add_word( ":", &define, 0 );
+	add_word( ";", &compile_end, 1 );
 
-	add_word( "@", &forth_setmem );
-	add_word( "!", &forth_getmem );
+	add_word( ".S", &forth_print_all, 0 );
+
+	add_word( "@", &forth_setmem, 0 );
+	add_word( "!", &forth_getmem, 0 );
+
+	add_word( "IF", &forth_if, 1 );
+	add_word( "ELSE", &forth_else, 1 );
+	add_word( "THEN", &forth_then, 1 );
+
+	add_word( "DO", &forth_do, 1 );
+	add_word( "LOOP", &forth_loop, 1 );
+
+	add_word( "I", &forth_i, 0 );
+	add_word( "J", &forth_j, 0 );
 }
 
 void word_to_flash(char *name_wrd, func *fnc){
@@ -158,7 +170,7 @@ void word_from_flash(uintptr_t addr_in_flash){
 	add_word(name_wrd, func_wrd);
 }
 
-void add_word( char *name, func wordFunc )
+void add_word( char *name, func wordFunc, char flag )
 {
 	if( strlen( name ) >= 32 )
 	{
@@ -184,6 +196,7 @@ void add_word( char *name, func wordFunc )
 		{
 			strcpy( words.word_array[i].name, name );
 			words.word_array[i].funcptr = wordFunc;
+			words.word_array[i].flag = flag | 0b10;
 			return;
 		}
 		else
@@ -204,10 +217,11 @@ void add_word( char *name, func wordFunc )
 	words.word_count++;
 
 	strcpy( words.word_array[word_pos].name, name );
+	words.word_array[word_pos].flag = flag;
 	words.word_array[word_pos].funcptr = wordFunc; //paste new word
 }
 
-func get_word( char *name)
+func get_word( char *name, status_t stat )
 {
 	int cmp_result;
 	for( int i = 0; i <= words.word_count; i++ )
@@ -217,7 +231,16 @@ func get_word( char *name)
 
 		if( cmp_result == 0 )
 		{
-			return words.word_array[i].funcptr;
+			if( words.word_array[i].flag & asm_run_only && stat == COMPILE )
+				return words.word_array[i].funcptr;
+			else if ( !(words.word_array[i].flag & asm_run_only) && stat == RUN )
+			{
+				return words.word_array[i].funcptr;
+			}
+			else
+			{
+				return NULL;
+			}
 		}
 		else if( cmp_result == -1 )
 		{

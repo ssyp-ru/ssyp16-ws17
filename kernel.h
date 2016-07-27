@@ -10,6 +10,8 @@
 		LITERAL = 4
 	};
 
+	typedef enum status status_t;
+
 	extern enum status state;
 
 	void dispatch();
@@ -21,5 +23,12 @@
 
 	void compile_start();
 	void compile_end();
+
+	void forth_if();
+	void forth_else();
+	void forth_then();
+
+	void forth_do();
+	void forth_loop();
 
 #endif

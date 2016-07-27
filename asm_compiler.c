@@ -168,11 +168,30 @@ uint16_t emit_cmp( uint8_t first, uint8_t two )
 	return ready;
 }
 
-uint16_t emit_beq( uint8_t offset )
+uint16_t emit_cmp_lt( uint8_t registr, uint8_t value )
+{
+	uint16_t ready = 0b0010100000000000;
+
+	ready|= ( registr & 0b111 ) << 8;
+	ready|= value;
+
+	return ready;
+}
+
+uint16_t emit_beq( int8_t offset )
 {
 	uint16_t ready = 0b1101000000000000;
 
 	ready|= ( offset & 0b111111110 ) >> 1;
+
+	return ready;
+}
+
+uint16_t emit_b( uint16_t offset )
+{
+	uint16_t ready = 0b1110000000000000;
+
+	ready |= ( offset & 0b111111111110 ) >> 1;
 
 	return ready;
 }

@@ -119,9 +119,9 @@ void forth_rot()
 	cell_t midle = pop();
 	cell_t last  = pop();
 
-	push( last  );
+	push( midle  );
 	push( first );
-	push( midle );
+	push( last );
 }
 
 void forth_crot()
@@ -160,6 +160,11 @@ void forth_low()
 	push( (pop() > pop()) ? 1 : 0 );
 }
 
+void forth_eq()
+{
+	push( (pop() == pop()) ? 1 : 0 );
+}
+
 void forth_hight()
 {
 	push( (pop() < pop()) ? 1 : 0);
@@ -195,7 +200,7 @@ void forth_print()
 	{
 		char value[16];
 		//printf( "%d\n", (int)datastack.data[ datastack.size-1 ] );
-		Dasha_itoa( (int)datastack.data[ datastack.size-1 ], value );
+		Dasha_itoa( (int)pop(), value );
 		UART_print( value );
 		UART_print( "\r\n" );
 	}
@@ -230,4 +235,20 @@ void forth_getmem()
 {
 	cell_t *ptr = (cell_t*)pop();
 	push( *ptr );
+}
+
+void forth_i()
+{
+	if( ctrlstack.size >= 2)
+	{
+		push( ctrlstack.data[1] );
+	}
+}
+
+void forth_j()
+{
+	if( ctrlstack.size >= 4)
+	{
+		push( ctrlstack.data[3] );
+	}
 }

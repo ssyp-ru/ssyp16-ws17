@@ -30,10 +30,14 @@
 	void forth_highte();
 	void forth_band();
 	void forth_bor();
+	void forth_eq();
 
 	void forth_print();
 	void forth_print_all();
 
 	void forth_setmem();
 	void forth_getmem();
+
+	void forth_i();
+	void forth_j();
 #endif

@@ -22,4 +22,6 @@
 	void cpush( cell_t new_element );
 	cell_t cpop();
 
+	char cloop();
+
 #endif

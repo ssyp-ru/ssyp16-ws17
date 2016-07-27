@@ -42,3 +42,13 @@ void cpush( cell_t in )
 
 	ctrlstack.data[ctrlstack.size-1] = in;
 }
+
+char cloop()
+{
+	if( ctrlstack.data[ctrlstack.size-2] > ctrlstack.data[ctrlstack.size-1] )
+	{
+		ctrlstack.data[ctrlstack.size-1]++;
+		return 0;
+	}
+	return 1;
+}

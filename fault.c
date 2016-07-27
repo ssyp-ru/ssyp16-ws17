@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "fault.h"
 #include "kernel.h"
+#include "words.h"
 
 extern void ResetISR(); // bad magic
 
@@ -16,16 +17,16 @@ void drop_to_main()
 {
 	state = RUN;
 	uint16_t bin[8];
-	uint32_t ldr = emit_ldr_long( 0, 2, 1 );
+	uint32_t ldr = emit_ldr_long( 4, 2, 1 );
 
 	bin[0] = ldr;
 	bin[1] = ldr >> 16;
 	bin[2] = emit_blx(2);
 	bin[3] = 0;
-	bin[4] = &main;
+	bin[4] = (&main)+0xDE;
 	bin[5] = 0;
 
-//	(func)
+	(((func)bin)+1)();
 }
 
 void fault( char *error )

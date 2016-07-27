@@ -151,10 +151,9 @@ void define()
 	asm_compiler.name[0] = 0;
 }
 
-uint16_t bin[256];
-
 void compile_end()
 {
+	uint16_t bin[256];
 	uint32_t buffer_32b;
 	uint16_t data_pos = 0;
 	uint16_t data_offset;
@@ -192,18 +191,6 @@ void compile_end()
 			pos+= 2;
 
 			break;
-		/*case ldr_long_a:
-			data_offset = (asm_commands.real_size - (pos*2)) + ( 4 * data_pos );
-			buffer_32b = emit_ldr_long( data_offset, 0, 1 );
-
-			data_pos++;
-
-			bin[pos] = buffer_32b;
-			bin[pos+1] = buffer_32b >> 16;
-
-			pos+= 2;
-
-			break;*/
 		case ldr_short_b:
 			registr = 2;
 		case ldr_short_a:
@@ -236,11 +223,10 @@ void compile_end()
 		pos+= 2;
 	}
 
-	uintptr_t flash_ptr = where_write( pos * 2 );
-	add_word( asm_compiler.name, ((func)flash_ptr)+1 );
+	//uintptr_t flash_pos = where_write_code( pos / 2 );
+	add_word( asm_compiler.name, ((func)flash_code_now)+1 );
 
-	//flash_free = flash_have_memory( pos * 2 );
-	flash_write( bin, pos / 2, flash_ptr );
+	flash_write_code( bin, (pos+1) / 2 );
 
 	state = RUN;
 }

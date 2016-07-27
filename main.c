@@ -3,6 +3,7 @@
 #include "words.h"
 #include "asm_compiler.h"
 #include "kernel.h"
+#include "flash.h"
 
 int main ()
 	{
@@ -11,6 +12,7 @@ int main ()
 	for( uint64_t i = 0; i < 250000; i++ ){;}//delay
 
 	init_words();
+	initialize_code();
 
 	UART_print( "HELLO PUTTY (or screen)\r\n" );
 

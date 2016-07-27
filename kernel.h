@@ -28,4 +28,7 @@
 	void forth_else();
 	void forth_then();
 
+	void forth_do();
+	void forth_loop();
+
 #endif

@@ -61,6 +61,12 @@ void init_words()
 	add_word( "IF", &forth_if, 1 );
 	add_word( "ELSE", &forth_else, 1 );
 	add_word( "THEN", &forth_then, 1 );
+
+	add_word( "DO", &forth_do, 1 );
+	add_word( "LOOP", &forth_loop, 1 );
+
+	add_word( "I", &forth_i, 0 );
+	add_word( "J", &forth_j, 0 );
 }
 
 void word_to_flash(char *name_wrd, func *fnc){

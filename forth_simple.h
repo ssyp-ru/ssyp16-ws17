@@ -37,4 +37,7 @@
 
 	void forth_setmem();
 	void forth_getmem();
+
+	void forth_i();
+	void forth_j();
 #endif

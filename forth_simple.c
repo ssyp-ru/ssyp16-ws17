@@ -236,3 +236,19 @@ void forth_getmem()
 	cell_t *ptr = (cell_t*)pop();
 	push( *ptr );
 }
+
+void forth_i()
+{
+	if( ctrlstack.size >= 2)
+	{
+		push( ctrlstack.data[1] );
+	}
+}
+
+void forth_j()
+{
+	if( ctrlstack.size >= 4)
+	{
+		push( ctrlstack.data[3] );
+	}
+}

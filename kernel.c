@@ -89,7 +89,7 @@ typedef struct asm_data_st
 
 typedef struct asm_offset_st
 {
-	uintptr_t offset[64];
+	cell_t offset[64];
 	size_t count;
 } asm_offset_t;
 
@@ -288,6 +288,62 @@ void literul_handler(char * word)
 		state = COMPILE;
 	}
 
+}
+
+void forth_do()
+{
+	asm_commands.commands[asm_commands.count] = ldr_long_b;
+	asm_commands.commands[asm_commands.count+1] = blx;
+	asm_commands.commands[asm_commands.count+2] = ldr_long_b;
+	asm_commands.commands[asm_commands.count+3] = blx;
+	asm_commands.commands[asm_commands.count+4] = ldr_long_b;
+	asm_commands.commands[asm_commands.count+5] = blx;
+	asm_commands.commands[asm_commands.count+6] = ldr_long_b;
+	asm_commands.commands[asm_commands.count+7] = blx;
+	asm_commands.commands[asm_commands.count+8] = ldr_long_b;
+	asm_commands.commands[asm_commands.count+9] = blx;
+
+	asm_commands.count+= 10;
+	asm_commands.real_size+= 30;
+
+	asm_data.data[asm_data.count] = &pop;
+	asm_data.data[asm_data.count+1] = &cpush;
+	asm_data.data[asm_data.count+2] = &pop;
+	asm_data.data[asm_data.count+3] = &cpush;
+	asm_data.data[asm_data.count+4] = &forth_cswap;
+
+	asm_data.count+= 5;
+
+	cpush( asm_commands.real_size );
+	cpush( 3 );
+}
+
+void forth_loop()
+{
+	asm_commands.commands[asm_commands.count] = ldr_long_b;			//4
+	asm_commands.commands[asm_commands.count+1] = blx;				//22
+	asm_commands.commands[asm_commands.count+2] = cmpd;				//20
+	asm_commands.commands[asm_commands.count+3] = beq;				//18
+	asm_commands.commands[asm_commands.count+4] = ldr_long_b;		//8
+	asm_commands.commands[asm_commands.count+5] = blx;				//16
+	asm_commands.commands[asm_commands.count+6] = ldr_long_b;		//12
+	asm_commands.commands[asm_commands.count+7] = blx;				//14
+
+	asm_commands.count+= 8;
+	asm_commands.real_size+= 22;
+
+	asm_data.data[asm_data.count] = &cloop;
+	asm_data.data[asm_data.count+1] = &cpop;
+	asm_data.data[asm_data.count+2] = &cpop;
+	asm_data.count+= 3;
+
+	cpop();
+	int pos = cpop();
+
+	cell_t offset = pos - asm_commands.real_size + 10;
+	asm_offset.offset[asm_offset.count] = offset;
+
+	asm_offset.count++;
 }
 
 void forth_if()

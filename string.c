@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+char * str;
+char * strCut;
+
 char *tokenise(char * string, char *result)
 {
-	static char * strCut;
-	static char * str;
 
 	if (str != string)
 	{
@@ -19,6 +20,9 @@ char *tokenise(char * string, char *result)
 	// We determine the length of the word submitted
 	size_t wordlen = 0;
 	// ...
+
+	if ( *strCut == 0 )
+			return NULL;
 
 	while  ((*strCut != ' ' ) && (*strCut != '\0') && (*strCut !='\t'))
 	{

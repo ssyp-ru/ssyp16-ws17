@@ -178,7 +178,7 @@ uint16_t emit_cmp_lt( uint8_t registr, uint8_t value )
 	return ready;
 }
 
-uint16_t emit_beq( uint8_t offset )
+uint16_t emit_beq( int8_t offset )
 {
 	uint16_t ready = 0b1101000000000000;
 

@@ -25,7 +25,8 @@ int main()
 	for( uint64_t i = 0; i < 250000; i++ ){;}//delay
 
 	init_words();
-	flash_page_erase(0x20000 + 1024);
+	//flash_mass_erase();
+	//flash_page_erase(0x20000 + 1024);
 	initialize_code();
 
 	UART_print( "HELLO PUTTY (or screen)\r\n" );

@@ -267,6 +267,7 @@ void compile_end()
 	//uintptr_t flash_pos = where_write_code( pos / 2 );
 
 	uintptr_t flash_pos = flash_write_code( bin, (pos+1) / 2 );
+	flash_pos;
 	add_word( asm_compiler.name, ((func)flash_pos)+1, 0 );
 
 

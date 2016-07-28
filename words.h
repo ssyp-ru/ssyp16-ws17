@@ -31,16 +31,12 @@
 
 	void init_words();
 
-<<<<<<< HEAD
 	void word_to_flash(char *name_wrd, func *fnc);
 
-	func get_word( char *name );
-	void add_word( char *name, func wordFunc );
-=======
 	func get_word( char *name, status_t stat );
 	char get_word_flag( char *word, word_flag_t flag );
 	void add_word( char *name, func wordFunc, char flag );
->>>>>>> a4d4f135d37751732a21216a233632601349b7f7
+
 	void rm_word( char *name );
 	
 	void initWords();

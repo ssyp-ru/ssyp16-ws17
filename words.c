@@ -167,7 +167,7 @@ void word_from_flash(uintptr_t addr_in_flash){
 	copy(name_wrd[32], *word_in_flash);
 	word_in_flash += 32;
 	func_wrd = *word_in_flash;
-	add_word(name_wrd, func_wrd);
+	add_word(name_wrd, func_wrd, 0);
 }
 
 void add_word( char *name, func wordFunc, char flag )

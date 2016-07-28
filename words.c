@@ -32,6 +32,8 @@ void init_words()
 	add_word( "crot", &forth_crot, 0 );
 	add_word( "cdrop", &forth_cdrop, 0 );
 
+	add_word( "over", &forth_over, 0 );
+
 	add_word( "&&", &forth_and, 0 );
 	add_word( "||", &forth_or, 0 );
 
@@ -48,7 +50,7 @@ void init_words()
 
 	add_word( ".", &forth_print, 0 );
 	add_word( "(", &parentheses, 0 );
-	add_word( "\"", &quote, 0 );
+	add_word( ".\"", &quote, 1 );
 
 	add_word( ":", &define, 0 );
 	add_word( ";", &compile_end, 1 );
@@ -118,20 +120,6 @@ void init_words_to_flash()
 	word_to_flash( ";", &compile_end);
 	word_to_flash( "|", &forth_bor );
 
-	word_to_flash( ".", &forth_print );
-	word_to_flash( "(", &parentheses);
-	word_to_flash( "\"", &quote);
-	word_to_flash( "|", &forth_bor );
-
-	word_to_flash( ".", &forth_print );
-	word_to_flash( "(", &parentheses);
-	word_to_flash( "\"", &quote);
-	word_to_flash( "|", &forth_bor );
-
-	word_to_flash( ".", &forth_print );
-	word_to_flash( "(", &parentheses);
-	word_to_flash( "\"", &quote);
-
 	word_to_flash( ".S", &forth_print_all );
 
 	word_to_flash( "@", &forth_setmem );
@@ -177,7 +165,7 @@ void add_word( char *name, func wordFunc, char flag )
 		fault( "name too long " );
 	}
 
-	if( words.word_count >= WORD_COUNT )
+	if( words.word_count >= MAX_WORD_COUNT )
 	{
 		fault( "too many words" );
 	}

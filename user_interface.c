@@ -100,7 +100,7 @@ void get_user_inputs( char *line )
 	char inChar = UART_getc();
 	int count = 0;	
 
-	while( inChar != CHAR_ENTER && inChar != CHAR_EOF )
+	while( inChar != CHAR_ENTER && inChar != CHAR_EOF && inChar != '\r' && inChar != '\n' )
 	{
 		UART_putc( inChar );
 
@@ -118,7 +118,7 @@ void get_user_inputs( char *line )
 			continue;
 		}
 
-		if( inChar == 0x1B )
+		if( inChar == 0x1B || inChar == '\n' )
 		{
 			inChar = UART_getc();
 			continue;

@@ -16,6 +16,7 @@
 	void forth_dup();
 	void forth_rot();
 	void forth_drop();
+	void forth_over();
 
 	void forth_cswap();
 	void forth_cdup();

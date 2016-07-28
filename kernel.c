@@ -44,11 +44,26 @@ void r_dummy_handler(char * word)
 	}
 }
 
+void print_bad_word( char *word )
+{
+	UART_print( ">>>> " );
+	UART_print(	word );
+	UART_print( " <<<<\r\n" );
+	UART_print( "unknown command\r\n" );
+}
+
 void run_handler(char * word)
 {
 	func word_a = get_word( word, RUN );
 	if(word_a == NULL)
 	{
+		if( !check_num( word ) )
+		{
+			print_bad_word( word );
+			//*buffer = 0;
+			//tokenise( NULL, NULL );
+			return;
+		}
 		int num;
 		num = string_to_int( word );
 		push (num);
@@ -71,7 +86,9 @@ typedef enum asm_type_enum
 	move_r = 8,
 	beq = 9,
 	b = 10,
-	nope = 11
+	nope = 11,
+	move_a = 12,
+	add = 13
 } asm_type_t;
 
 typedef struct asm_commands_st
@@ -93,11 +110,18 @@ typedef struct asm_offset_st
 	size_t count;
 } asm_offset_t;
 
+typedef struct asm_literal_st
+{
+	char lirterals[8][64];
+	size_t count;
+} asm_literal_t;
+
 typedef struct asm_compiler_st
 {
 	asm_commands_t asm_commands;
 	asm_data_t asm_data;
 	asm_offset_t asm_offset;
+	asm_literal_t asm_literal;
 	char name[64];
 } asm_compiler_t;
 
@@ -106,6 +130,7 @@ asm_compiler_t asm_compiler;
 #define asm_commands asm_compiler.asm_commands // too many words aaaaaaaaaaa
 #define asm_data asm_compiler.asm_data
 #define asm_offset asm_compiler.asm_offset
+#define asm_literal asm_compiler.asm_literal
 
 void compile_handler(char * word)
 {
@@ -139,6 +164,15 @@ void compile_handler(char * word)
 	}
 	else
 	{
+		if( !check_num( word ) )
+		{
+			state = RUN;
+			print_bad_word( word );
+			*buffer = 0;
+			tokenise( NULL, NULL );
+			return;
+		}
+
 		asm_commands.commands[asm_commands.count] = ldr_long_b;
 		asm_commands.commands[asm_commands.count+1] = ldr_long_a;
 		asm_commands.commands[asm_commands.count+2] = blx;
@@ -195,6 +229,12 @@ void compile_end()
 
 			break;
 		case beq:
+
+			//if( pos % 2 == 0 )
+			//{
+			//	asm_offset.offset[cpos]-= 2;
+			//}
+
 			bin[pos] = emit_beq( asm_offset.offset[cpos] );
 			pos++;
 			cpos++;
@@ -249,6 +289,22 @@ void compile_end()
 			pos++;
 
 			break;
+		case add:
+
+			bin[pos] = emit_add( 0, 1, 0 );
+			pos++;
+
+			break;
+		case move_a:
+
+			bin[pos] = emit_mov( 15, 1 );
+			pos++;
+
+			asm_data.data[data_pos] = (asm_commands.real_size - (pos*2)) +
+										(asm_data.count * 2) +
+										(asm_data.data[data_pos] * 64) + 4;
+
+			break;
 		};
 	}
 
@@ -262,6 +318,15 @@ void compile_end()
 		bin[pos+1] = (asm_data.data[i]) >> 16;
 
 		pos+= 2;
+	}
+
+	for( int i = 0; i < asm_literal.count; i++ )
+	{
+		for( int j = 0; j < 32; j++ )
+		{
+			bin[pos] = *((uint16_t*)(&asm_literal.lirterals[i][j * 2]));
+			pos++;
+		}
 	}
 
 	//uintptr_t flash_pos = where_write_code( pos / 2 );
@@ -282,13 +347,36 @@ void c_dummy_handler(char * word)
 	}
 }
 
+void literul_print( char *text )
+{
+	UART_print( text );
+}
+
 void literul_handler(char * word)
 {
 	if(*word == '"')
 	{
 		state = COMPILE;
 	}
+	else
+	{
+		copy( asm_literal.lirterals[asm_literal.count], word );
+		asm_literal.count++;
 
+		asm_commands.commands[asm_commands.count] = ldr_long_b;
+		asm_commands.commands[asm_commands.count+1] = move_a;
+		asm_commands.commands[asm_commands.count+2] = ldr_long_a;
+		asm_commands.commands[asm_commands.count+3] = add;
+		asm_commands.commands[asm_commands.count+4] = blx;
+
+		asm_commands.count+= 5;
+		asm_commands.real_size+= 14;
+
+		asm_data.data[asm_data.count] = &literul_print;
+		asm_data.data[asm_data.count+1] = asm_literal.count-1;
+
+		asm_data.count+= 2;
+	}
 }
 
 void forth_do()
@@ -343,6 +431,11 @@ void forth_loop()
 
 	cell_t offset = pos - asm_commands.real_size + 10;
 	asm_offset.offset[asm_offset.count] = offset;
+
+	if( offset > 0 )
+	{
+		offset*= -1;
+	}
 
 	asm_offset.count++;
 }

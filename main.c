@@ -24,7 +24,7 @@ int main()
 
 	for( uint64_t i = 0; i < 250000; i++ ){;}//delay
 
-	init_words();
+	init_words_from_flash();
 	//flash_mass_erase();
 	//flash_page_erase(0x20000 + 1024);
 	initialize_code();

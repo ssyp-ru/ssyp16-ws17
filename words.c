@@ -193,16 +193,16 @@ void init_words_from_flash(){
 void add_word( char *name, func wordFunc, char flag )
 {
 	char buffer[32];
-	copy( buffer, name );
-	to_lower( buffer );
 	if( strlen( buffer ) >= 32 )
 	{
 		fault( "name too long " );
 	}
+	strcpy( buffer, name );
+	to_lower( buffer );
 
 	if( words.word_count >= MAX_WORD_COUNT )
 	{
-		fault( "too many words" );
+		fault( "Dictionary full" );
 	}
 
 	int word_pos = 0; //pos for new word

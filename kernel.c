@@ -114,6 +114,7 @@ typedef struct asm_literal_st
 {
 	char lirterals[8][64];
 	size_t count;
+	int can_add;
 } asm_literal_t;
 
 typedef struct asm_compiler_st
@@ -301,8 +302,8 @@ void compile_end()
 			pos++;
 
 			asm_data.data[data_pos] = (asm_commands.real_size - (pos*2)) +
-										(asm_data.count * 2) +
-										(asm_data.data[data_pos] * 64) + 4;
+										(asm_data.count * 4) +
+										(asm_data.data[data_pos] * 64);
 
 			break;
 		};
@@ -350,16 +351,43 @@ void c_dummy_handler(char * word)
 void literul_print( char *text )
 {
 	UART_print( text );
+	UART_putc( ' ' );
 }
+
+
 
 void literul_handler(char * word)
 {
 	if(*word == '"')
 	{
 		state = COMPILE;
+
+		asm_commands.commands[asm_commands.count] = ldr_long_b;
+		asm_commands.commands[asm_commands.count+1] = blx;
+
+		asm_commands.count+= 2;
+
+		asm_data.data[asm_data.count] = &UART_next_line;
+
+		asm_data.count+= 1;
+
+		asm_commands.real_size+= 6;
+
+		asm_literal.can_add = 0;
 	}
 	else
 	{
+		if( asm_literal.count > 0 && len( asm_literal.lirterals[asm_literal.count-1] ) + len( word ) < 62 && asm_literal.can_add )
+		{
+			int literal_len = len(asm_literal.lirterals[asm_literal.count-1]);
+			*(asm_literal.lirterals[asm_literal.count-1] + literal_len) = ' ';
+			literal_len++;
+			copy( (asm_literal.lirterals[asm_literal.count-1] + literal_len), word );
+			return;
+		}
+
+		asm_literal.can_add = 1;
+
 		copy( asm_literal.lirterals[asm_literal.count], word );
 		asm_literal.count++;
 

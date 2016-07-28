@@ -95,6 +95,11 @@ void init_UART()
 	*(uint16_t*)UARTCTL = UART_ON_RECEIVE_TRANSMIT_F; // UART ON
 }
 
+void UART_next_line()
+{
+	UART_print( "\r\n" );
+}
+
 void get_user_inputs( char *line )
 {
 	char inChar = UART_getc();

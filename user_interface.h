@@ -7,6 +7,7 @@
 
 	void UART_print( char *line );
 	void UART_putc( char c );
+	void UART_next_line();
 
 	char UART_getc();
 

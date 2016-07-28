@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "kernel.h"
 
 #ifndef __WORDS__
@@ -12,7 +13,7 @@
 	{
 		char name[32];
 		func funcptr;
-		char flag;
+		uintptr_t flag;
 	} word_t;
 
 	typedef struct word_mass

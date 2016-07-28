@@ -70,6 +70,8 @@ void init_words()
 
 	add_word( "I", &forth_i, 0 );
 	add_word( "J", &forth_j, 0 );
+
+	add_word( "recurse", &forth_recurse, 1 );
 }
 
 void word_to_flash(char *name_wrd, func *fnc){

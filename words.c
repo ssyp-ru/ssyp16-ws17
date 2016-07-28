@@ -6,6 +6,7 @@
 #include "kernel.h"
 #include "flash.h"
 #include "string.h"
+#include "forth_compiler.h"
 
 #define strlen len
 #define strcpy copy
@@ -160,7 +161,10 @@ void word_from_flash(uintptr_t addr_in_flash){
 
 void add_word( char *name, func wordFunc, char flag )
 {
-	if( strlen( name ) >= 32 )
+	char buffer[32];
+	copy( buffer, name );
+	to_lower( buffer );
+	if( strlen( buffer ) >= 32 )
 	{
 		fault( "name too long " );
 	}
@@ -174,7 +178,7 @@ void add_word( char *name, func wordFunc, char flag )
 	int cmp_result;
 	for( int i = 0; i < words.word_count; i++ )
 	{
-		cmp_result = cmp( name, words.word_array[i].name );
+		cmp_result = cmp( buffer, words.word_array[i].name );
 
 		if( cmp_result > 0 )
 		{
@@ -182,7 +186,7 @@ void add_word( char *name, func wordFunc, char flag )
 		}
 		else if( cmp_result == 0 ) // if word exist replase word
 		{
-			strcpy( words.word_array[i].name, name );
+			strcpy( words.word_array[i].name, buffer );
 			words.word_array[i].funcptr = wordFunc;
 			words.word_array[i].flag = flag | 0b10;
 			return;
@@ -204,7 +208,7 @@ void add_word( char *name, func wordFunc, char flag )
 	
 	words.word_count++;
 
-	strcpy( words.word_array[word_pos].name, name );
+	strcpy( words.word_array[word_pos].name, buffer );
 	words.word_array[word_pos].flag = flag;
 	words.word_array[word_pos].funcptr = wordFunc; //paste new word
 }

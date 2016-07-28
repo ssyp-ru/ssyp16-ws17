@@ -201,3 +201,14 @@ int string_to_int( char *text ) //by dima
 	return value * char_mult;
 }
 
+void to_lower( char *text )
+{
+	while( *text != 0 )
+	{
+		if( *text >= 'A' && *text <= 'Z' )
+		{
+			*text-= 'A' - 'a';
+		}
+		text++;
+	}
+}

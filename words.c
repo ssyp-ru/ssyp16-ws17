@@ -8,10 +8,6 @@
 #include "string.h"
 #include "forth_compiler.h"
 
-#define strlen len
-#define strcpy copy
-//int cmp( char *leftWord, char *rightWord );
-
 word_mass_t words;
 
 void init_words()
@@ -50,10 +46,11 @@ void init_words()
 	add_word( "|", &forth_bor, 0 );
 
 	add_word( ".", &forth_print, 0 );
-	add_word( "(", &parentheses, 0 );
+	add_word( "(", &parentheses, run_always );
 	add_word( ".\"", &quote, 1 );
 
 	add_word( ":", &define, 0 );
+	add_word( "::", &define_compile_time, 0 );
 	add_word( ";", &compile_end, 1 );
 
 	add_word( ".S", &forth_print_all, 0 );
@@ -72,6 +69,9 @@ void init_words()
 	add_word( "J", &forth_j, 0 );
 
 	add_word( "recurse", &forth_recurse, 1 );
+
+	add_word( "R>", &forth_ctrl_to_data, 0 );
+	add_word( "R<", &forth_data_to_ctrl, 0 );
 }
 
 void word_to_flash(char *name_wrd, func *fnc){
@@ -129,28 +129,6 @@ void init_words_to_flash()
 	word_to_flash( "!", &forth_getmem );
 }
 
-//void flash_to_word ()
-
-/*void read_word(){
-	uintptr_t *help = (uintptr_t *)((flash_dict_now & ~0x3FF));
-	char h[sizeof(word_t)*WORD_COUNT];
-	int it = 0;
-
-	while(1){
-		while((*help != END_OF_PAGE) && (help <= ((uintptr_t *)((flash_dict_now & ~0x3FF))) + 1024 - 1 * 4)){
-			++help;
-			h[++it] = *help;
-		}
-		if (*help == END_OF_PAGE)
-		{
-			help = (uintptr_t *)*(help+1);
-			--it;
-		}
-		else
-		break;
-	}
-}*/
-
 void word_from_flash(uintptr_t addr_in_flash){
 	char name_wrd[32];
 	func func_wrd;
@@ -166,7 +144,7 @@ void add_word( char *name, func wordFunc, char flag )
 	char buffer[32];
 	copy( buffer, name );
 	to_lower( buffer );
-	if( strlen( buffer ) >= 32 )
+	if( len( buffer ) >= 32 )
 	{
 		fault( "name too long " );
 	}
@@ -188,9 +166,9 @@ void add_word( char *name, func wordFunc, char flag )
 		}
 		else if( cmp_result == 0 ) // if word exist replase word
 		{
-			strcpy( words.word_array[i].name, buffer );
+			copy( words.word_array[i].name, buffer );
 			words.word_array[i].funcptr = wordFunc;
-			words.word_array[i].flag = flag | 0b10;
+			words.word_array[i].flag = flag | reset;
 			return;
 		}
 		else
@@ -210,7 +188,7 @@ void add_word( char *name, func wordFunc, char flag )
 	
 	words.word_count++;
 
-	strcpy( words.word_array[word_pos].name, buffer );
+	copy( words.word_array[word_pos].name, buffer );
 	words.word_array[word_pos].flag = flag;
 	words.word_array[word_pos].funcptr = wordFunc; //paste new word
 }
@@ -225,7 +203,11 @@ func get_word( char *name, status_t stat )
 
 		if( cmp_result == 0 )
 		{
-			if( words.word_array[i].flag & asm_run_only && stat == COMPILE )
+			if( words.word_array[i].flag & run_always )
+			{
+				return words.word_array[i].funcptr;
+			}
+			else if( words.word_array[i].flag & asm_run_only && stat == COMPILE )
 				return words.word_array[i].funcptr;
 			else if ( !(words.word_array[i].flag & asm_run_only) && stat == RUN )
 			{
@@ -244,31 +226,6 @@ func get_word( char *name, status_t stat )
 		
 	return 0;
 }
-
-/*func get_word( char *name)
-{
-	int cmp_result, i, a, b;
-	i = words.word_count / 2;
-	a = 0;
-	b = words.word_count - 1;
-	while( words.word_array[i].name != name)
-	{
-		cmp_result = cmp( name, words.word_array[i].name );
-
-		if( cmp_result == 0 )
-		{
-			b = i;
-			i = (a+b)/2;
-		}
-		else
-		{
-			a = i;
-			i = (a+b)/2;
-		}
-	}
-
-	return words.word_array[i].funcptr;
-}*/
 
 void rm_word( char *name )
 {

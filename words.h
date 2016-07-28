@@ -25,7 +25,8 @@
 	typedef enum word_flag_en
 	{
 		asm_run_only = 0b1,
-		reset = 0b10
+		reset = 0b10,
+		run_always = 0b100
 	} word_flag_t;
 
 	extern word_mass_t words;

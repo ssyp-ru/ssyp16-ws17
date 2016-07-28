@@ -10,11 +10,11 @@
 	void forth_do();
 	void forth_loop();
 
-	void r_dummy_handler(char * word);
 	void compile_handler(char * word);
-	void c_dummy_handler(char * word);
 	int literul_handler(char * word);
 
 	void forth_recurse();
+
+	void define_compile_time();
 
 #endif

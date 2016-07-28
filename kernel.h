@@ -4,9 +4,7 @@
 	enum status
 	{
 		RUN	= 0,
-		COMPILE	= 1,
-		R_DUMMY = 2,
-		C_DUMMY = 3
+		COMPILE	= 1
 	};
 
 	typedef enum status status_t;
@@ -16,6 +14,9 @@
 
 	void dispatch();
 	void run_handler(char * word);
+
+	void c_dummy_handler(char * word);
+	int r_dummy_handler(char * word);
 
 	void compile_start();
 	void compile_end();

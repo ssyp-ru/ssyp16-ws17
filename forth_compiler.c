@@ -4,6 +4,10 @@
 #include "forth_simple.h"
 #include "user_interface.h"
 #include "forth_compiler.h"
+#include "string.h"
+#include "asm_compiler.h"
+
+#define NOP 0xBF00
 
 typedef enum asm_type_enum
 {
@@ -55,6 +59,7 @@ typedef struct asm_compiler_st
 	asm_data_t asm_data;
 	asm_offset_t asm_offset;
 	asm_literal_t asm_literal;
+	int compile_time;
 	char name[64];
 } asm_compiler_t;
 
@@ -81,7 +86,7 @@ void compile_handler(char * word)
 	}
 
 	foo = get_word( word, RUN );
-
+	if( foo == parentheses )foo();
 	if( foo != NULL )
 	{
 		asm_commands.commands[asm_commands.count] = ldr_long_b;
@@ -133,6 +138,14 @@ void define()
 	asm_commands.real_size = 0;
 	asm_compiler.name[0] = 0;
 	asm_offset.count = 0;
+	asm_literal.count = 0;
+	asm_compiler.compile_time = 0;
+}
+
+void define_compile_time()
+{
+	define();
+	asm_compiler.compile_time = 1;
 }
 
 void compile_end()
@@ -166,11 +179,6 @@ void compile_end()
 
 			break;
 		case beq:
-
-			//if( pos % 2 == 0 )
-			//{
-			//	asm_offset.offset[cpos]-= 2;
-			//}
 
 			bin[pos] = emit_beq( asm_offset.offset[cpos] );
 			pos++;
@@ -291,7 +299,7 @@ void compile_end()
 
 	flash_write_code( bin, (pos+1) / 2 );
 	flash_pos;
-	add_word( asm_compiler.name, ((func)flash_pos)+1, 0 );
+	add_word( asm_compiler.name, ((func)flash_pos)+1, asm_compiler.compile_time );
 
 
 	state = RUN;

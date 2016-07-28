@@ -8,10 +8,18 @@
 
 void parentheses()
 {
-	if (state == RUN)
-		state = R_DUMMY; 
-	else
-		state = C_DUMMY;
+	//if (state == RUN)
+	//	state = R_DUMMY;
+	//else
+	//	state = C_DUMMY;
+	while(1)
+	{
+		tokenise( buffer, word );
+		if( word == NULL || !r_dummy_handler( word ) )
+		{
+			return;
+		}
+	}
 }
 
 void quote()
@@ -270,4 +278,14 @@ void forth_j()
 	{
 		push( ctrlstack.data[3] );
 	}
+}
+
+void forth_data_to_ctrl()
+{
+	cpush( pop() );
+}
+
+void forth_ctrl_to_data()
+{
+	push( cpop() );
 }

@@ -28,9 +28,6 @@ void dispatch()
 			{
 				case RUN: run_handler(word); break;
 				case COMPILE: compile_handler(word); break;
-				case R_DUMMY: r_dummy_handler(word); break;
-				case C_DUMMY: c_dummy_handler(word); break;
-
 			}
 		}
 
@@ -38,12 +35,13 @@ void dispatch()
 	}
 }
 
-void r_dummy_handler(char * word)
+int r_dummy_handler(char * word)
 {
 	if (*word == ')')
 	{
-		state = RUN;
+		return 0;
 	}
+	return 1;
 }
 
 void print_bad_word( char *word )
@@ -62,8 +60,6 @@ void run_handler(char * word)
 		if( !check_num( word ) )
 		{
 			print_bad_word( word );
-			//*buffer = 0;
-			//tokenise( NULL, NULL );
 			return;
 		}
 		int num;

@@ -41,4 +41,8 @@
 
 	void forth_i();
 	void forth_j();
+
+	void forth_data_to_ctrl();
+	void forth_ctrl_to_data();
+
 #endif

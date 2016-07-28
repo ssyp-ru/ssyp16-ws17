@@ -16,7 +16,16 @@ void parentheses()
 
 void quote()
 {
-	state = LITERAL;
+	//state = LITERAL;
+
+	while(1)
+	{
+		tokenise( buffer, word );
+		if( word == NULL || !literul_handler( word ) )
+		{
+			return;
+		}
+	}
 }
 
 void forth_add()
@@ -190,11 +199,21 @@ void forth_bor()
 	push( (pop() | pop()) ? 1 : 0 );
 }
 
+void forth_over()
+{
+	cell_t buffer[2];
+	buffer[0] = pop();
+	buffer[1] = pop();
+	push( buffer[1] );
+	push( buffer[0] );
+	push( buffer[1] );
+}
+
 void forth_print()
 {
 	if( datastack.size < 1 )
 	{
-		UART_print( "stack underflow\r\n" );
+		UART_print( "stack is empty\r\n" );
 	}
 	else
 	{
@@ -210,7 +229,7 @@ void forth_print_all()
 {
 	if( datastack.size < 1 )
 	{
-		UART_print( "stack underflow\r\n" );
+		UART_print( "stack is empty\r\n" );
 	}
 	else
 	{

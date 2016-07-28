@@ -127,6 +127,26 @@ int int_from_char( char ch )
 	return (ch - 'A' + 10);
 }
 
+int check_num( char *text )
+{
+	int pos = 0;
+	if( text[0] == '0' && text[1] == 'x' )
+	{
+		pos+= 2;
+	}
+
+	while( text[pos] != 0 )
+	{
+		if(!( ( ( text[pos] >= '0' ) && (text[pos] <= '9') ) || ( ( text[pos] >= 'a' ) && (text[pos] <= 'f') ) || ( ( text[pos] >= 'A' ) && (text[pos] <= 'F') ) ))
+		{
+			return 0;
+		}
+		pos++;
+	}
+
+	return 1;
+}
+
 int string_to_int( char *text ) //by dima
 {
 	int mult = 10;
@@ -166,14 +186,14 @@ int string_to_int( char *text ) //by dima
 		value*= mult;
 		num = int_from_char(text[i]);
 
-		if( num < 0 || num > 16 )
-		{
-			UART_print( ">>> " );
-			UART_print( text );
-			UART_print( " <<<\r\n" );
+		//if( num < 0 || num > 16 )
+		//{
+		//	UART_print( ">>> " );
+		//	UART_print( text );
+		//	UART_print( " <<<\r\n" );
 
-			fault( "unknown command" );
-		}
+		//	fault( "unknown command" );
+		//}
 
 		value+= num;
 	}
@@ -181,3 +201,14 @@ int string_to_int( char *text ) //by dima
 	return value * char_mult;
 }
 
+void to_lower( char *text )
+{
+	while( *text != 0 )
+	{
+		if( *text >= 'A' && *text <= 'Z' )
+		{
+			*text-= 'A' - 'a';
+		}
+		text++;
+	}
+}

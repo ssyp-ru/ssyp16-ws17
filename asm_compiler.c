@@ -147,13 +147,18 @@ uint32_t emit_ldr_long( uint16_t offset, uint8_t registr, uint8_t add )
 
 uint16_t emit_mov( int sourse, int target )
 {
-	uint16_t ready = 0;
+	//uint16_t ready = 0;
 
-	sourse&= 0b111;
-	target&= 0b111;
+	//sourse&= 0b111;
+	//target&= 0b111;
 
-	ready = target;
-	ready|= sourse << 3;
+	//ready = target;
+	//ready|= sourse << 3;
+
+	uint16_t ready = 0b0100011000000000;
+
+	ready|= target & 0b111;
+	ready|= ( sourse & 0b1111 ) << 3;
 
 	return ( ready );
 }
@@ -178,7 +183,7 @@ uint16_t emit_cmp_lt( uint8_t registr, uint8_t value )
 	return ready;
 }
 
-uint16_t emit_beq( int8_t offset )
+uint16_t emit_beq( int16_t offset )
 {
 	uint16_t ready = 0b1101000000000000;
 
@@ -192,6 +197,17 @@ uint16_t emit_b( uint16_t offset )
 	uint16_t ready = 0b1110000000000000;
 
 	ready |= ( offset & 0b111111111110 ) >> 1;
+
+	return ready;
+}
+
+uint16_t emit_add( uint8_t result, uint8_t two, uint8_t first )
+{
+	uint16_t ready = 0b0001100000000000;
+
+	ready|= first & 0b111;
+	ready|= ( two & 0b111) << 3;
+	ready|= ( result & 0b111) << 6;
 
 	return ready;
 }

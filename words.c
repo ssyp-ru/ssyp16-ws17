@@ -74,84 +74,103 @@ void init_words()
 	add_word( "R<", &forth_data_to_ctrl, 0 );
 }
 
-void word_to_flash(char *name_wrd, func *fnc){
+void word_to_flash(char *name_wrd, func fnc, char *flag){
 	word_t wrd;
-	for(int c = 0; c < 32; c++){
+	for(int c = 0; c < 31; c++){
 		wrd.name[c] = 0;
 	}
 	copy(wrd.name, name_wrd);
 	wrd.funcptr = fnc;
+	wrd.flag = *flag;
 	flash_write_dict (&wrd, (sizeof (word_t)) / 4);
 }
 
 void init_words_to_flash()
 {
-	word_to_flash( "+", &forth_add );
-	word_to_flash( "-", &forth_sub );
-	word_to_flash( "/", &forth_div );
-	word_to_flash( "*", &forth_mul );
-	word_to_flash( "%", &forth_mod );
-	word_to_flash( "/%", &forth_divmod );
+	word_to_flash( "+", &forth_add, 0 );
+	word_to_flash( "-", &forth_sub, 0 );
+	word_to_flash( "/", &forth_div, 0 );
+	word_to_flash( "*", &forth_mul, 0 );
+	word_to_flash( "%", &forth_mod, 0 );
+	word_to_flash( "/%", &forth_divmod, 0 );
 
-	word_to_flash( "swap", &forth_swap );
-	word_to_flash( "dup", &forth_dup );
-	word_to_flash( "rot", &forth_rot );
-	word_to_flash( "drop", &forth_drop );
+	word_to_flash( "swap", &forth_swap, 0 );
+	word_to_flash( "dup", &forth_dup, 0 );
+	word_to_flash( "rot", &forth_rot, 0 );
+	word_to_flash( "drop", &forth_drop, 0 );
 
-	word_to_flash( "cswap", &forth_cswap );
-	word_to_flash( "cdup", &forth_cdup );
-	word_to_flash( "crot", &forth_crot );
-	word_to_flash( "cdrop", &forth_cdrop );
+	word_to_flash( "cswap", &forth_cswap, 0 );
+	word_to_flash( "cdup", &forth_cdup, 0 );
+	word_to_flash( "crot", &forth_crot, 0 );
+	word_to_flash( "cdrop", &forth_cdrop, 0 );
 
-	word_to_flash( "&&", &forth_and );
-	word_to_flash( "||", &forth_or );
+	word_to_flash( "&&", &forth_and, 0 );
+	word_to_flash( "||", &forth_or, 0 );
 
-	word_to_flash( "<", &forth_low );
-	word_to_flash( "<=", &forth_lowe );
+	word_to_flash( "<", &forth_low, 0 );
+	word_to_flash( "<=", &forth_lowe, 0 );
 
-	word_to_flash( ">", &forth_hight );
-	word_to_flash( ">=", &forth_highte );
+	word_to_flash( ">", &forth_hight, 0 );
+	word_to_flash( ">=", &forth_highte, 0 );
 
-	word_to_flash( "&", &forth_band );
-	word_to_flash( "|", &forth_bor );
+	word_to_flash( "==", &forth_eq, 0 );
 
-	word_to_flash( ".", &forth_print );
-	word_to_flash( "(", &parentheses);
-	word_to_flash( "\"", &quote);
+	word_to_flash( "&", &forth_band, 0 );
+	word_to_flash( "|", &forth_bor, 0 );
 
-	word_to_flash( ":", &define);
-	word_to_flash( ";", &compile_end);
-	word_to_flash( "|", &forth_bor );
+	word_to_flash( ".", &forth_print, 0 );
+	word_to_flash( "(", &parentheses, 0 );
+	word_to_flash( "\"", &quote, 0 );
 
-	word_to_flash( ".S", &forth_print_all );
+	word_to_flash( ":", &define, 0 );
+	word_to_flash( ";", &compile_end, 1 );
 
-	word_to_flash( "@", &forth_setmem );
-	word_to_flash( "!", &forth_getmem );
+	word_to_flash( ".S", &forth_print_all, 0 );
+
+	word_to_flash( "@", &forth_setmem, 0 );
+	word_to_flash( "!", &forth_getmem, 0 );
+
+	word_to_flash( "IF", &forth_if, 1 );
+	word_to_flash( "ELSE", &forth_else, 1 );
+	word_to_flash( "THEN", &forth_then, 1 );
+
+	word_to_flash( "DO", &forth_do, 1 );
+	word_to_flash( "LOOP", &forth_loop, 1 );
+
+	word_to_flash( "I", &forth_i, 0 );
+	word_to_flash( "J", &forth_j, 0 );
 }
 
-void word_from_flash(uintptr_t addr_in_flash){
-	char name_wrd[32];
-	func func_wrd;
-	int *word_in_flash = (char *)addr_in_flash;
-	copy(name_wrd[32], *word_in_flash);
-	word_in_flash += 32;
-	func_wrd = *word_in_flash;
-	add_word(name_wrd, func_wrd, 0);
+void word_from_flash(uintptr_t addr_flash){
+	word_t *word = (word_t *) addr_flash;
+	add_word(word->name, word->funcptr, word->flag);
+}
+
+void init_words_from_flash(){
+	uint32_t *addr_flash = 0x20000;
+	while(*addr_flash != 0xFFFFFFFF){
+		if(*addr_flash == END_OF_PAGE){
+			addr_flash = *(addr_flash + 1);
+		}
+	word_from_flash(addr_flash);
+	addr_flash += (sizeof(word_t)) / 4;
+	}
 }
 
 void add_word( char *name, func wordFunc, char flag )
 {
-	char buffer[32];
-	copy( buffer, name );
-	to_lower( buffer );
 	if( len( buffer ) >= 32 )
 	{
 		fault( "name too long " );
 	}
 
+	char buffer[32];
+	copy( buffer, name );
+	to_lower( buffer );
+
 	if( words.word_count >= MAX_WORD_COUNT )
 	{
-		fault( "too many words" );
+		fault( "Dictionary full" );
 	}
 
 	int word_pos = 0; //pos for new word

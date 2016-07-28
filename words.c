@@ -158,8 +158,8 @@ void init_words_to_flash()
 	}
 }*/
 
-void word_from_flash(uintptr_t addr_in_flash){
-	char name_wrd[31];
+void word_from_flash(uintptr_t addr_flash){
+/*	char name_wrd[31];
 	func func_wrd;
 	char flag_wrd;
 	int *word_in_flash = (char *)addr_in_flash;
@@ -169,6 +169,20 @@ void word_from_flash(uintptr_t addr_in_flash){
 	word_in_flash += 1;
 	flag_wrd = *word_in_flash;
 	add_word(name_wrd, func_wrd, flag_wrd);
+*/
+	word_t *word = (word_t *) addr_flash;
+	add_word(word->name, word->funcptr, word->flag);
+}
+
+void init_words_from_flash(){
+	uint32_t *addr_flash = 0x20000;
+	while(*addr_flash != 0xFFFFFFFF){
+		if(*addr_flash == END_OF_PAGE){
+			addr_flash = *(addr_flash + 1);
+		}
+	word_from_flash(addr_flash);
+	addr_flash += (sizeof(word_t)) / 4;
+	}
 }
 
 void add_word( char *name, func wordFunc, char flag )

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "kernel.h"
+#include "flash.h"
 
 #ifndef __WORDS__
 #define __WORDS__
@@ -10,7 +11,7 @@
 
 	typedef struct word
 	{
-		char name[31];
+		char name[32];
 		func funcptr;
 		char flag;
 	} word_t;
@@ -32,6 +33,10 @@
 	void init_words();
 
 	void word_to_flash(char *name_wrd, func fnc, char *flag);
+	void init_words_from_flash();
+	void init_words_to_flash();
+	void word_from_flash(uintptr_t addr_flash);
+
 	func get_word( char *name, status_t stat );
 	char get_word_flag( char *word, word_flag_t flag );
 	void add_word( char *name, func wordFunc, char flag );
